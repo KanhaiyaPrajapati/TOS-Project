@@ -2,15 +2,17 @@ import { Box, Container, TextField } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import login from "../Images/tos.webp";
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Login = () => {
   const initialValues = {
     email: "",
     password: "",
   };
-  
+
   const navigate = useNavigate();
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -24,6 +26,23 @@ const Login = () => {
     actions.resetForm();
     navigate('/dashboard');
   };
+
+
+  // useEffect(() => {
+  //   const getloginapi = async () =>{
+  //     try {
+  //       let data =  await axios.get('http://localhost:3000/api/user/login');
+  //       console.log(data.data);
+  //     } catch (error) {
+  //       console.log(error);  
+  //     }
+  //   }
+  //   getloginapi()
+  // }, [])
+  
+
+  let selector = useSelector((state)=>state.signup.item)
+  console.log(selector);
 
   return (
     <Container className="login-wrapper">

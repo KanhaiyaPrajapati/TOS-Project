@@ -27,7 +27,6 @@
 //     phone: "",
 //     gender: "",
 //     role: "",
-//     // area: "",
 //   };
 
 //   const validationSchema = Yup.object().shape({
@@ -42,7 +41,6 @@
 //     phone: Yup.number().required("Please Enter the phone number"),
 //     gender: Yup.string().required("Please select your gender"),
 //     role: Yup.string().required("Please select your role"),
-//     // area: Yup.string().required("Please select your City"),
 //   });
 //   let navigate = useNavigate();
 
@@ -50,40 +48,43 @@
 //     console.log(values);
 //     actions.resetForm();
 //     navigate("/login");
+//     getapi();
 //   };
 
-//   useEffect(() => {
-//     const getapi = async () => {
-//       try {
-//         let data = await axios.get("localhost:3000/api/user/create", {
-//           headers: {
-//             Authorization: "Bearer ",
-//           },
-//         });
-//         console.log(data.data);
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     };
-//     getapi();
-//   }, []);
+//   const getapi = async () =>{
+//     const obj ={
+//       fullName: "krishna",
+//       email: "krishna123@gmail.com",
+//       password: "Hello@12367",
+//       confirmPassword: "Hello@12367",
+//       phone: "9856327410",
+//       gender: "male",
+//       role: "admin",
+//     }
+//     try {
+//       let data =  axios.post("http://localhost:3000/api/user/create",obj);
+//       console.log(data.data);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
 
 //   return (
 //     <>
 //       <Container className="signup-container">
-//         <div className="row">
-//           <Box className="col-lg-5 col-sm-12 m-0 p-0">
+//         <div
+//           className="row gx-0 p-0 m-0"
+//           style={{ display: "flex", justifyContent: "center" }}
+//         >
+//           <Box className="col-lg-4 col-sm-12 m-0 p-0">
 //             <img
 //               src={signupimage}
-//               alt=""
-//               className="img-fluid h-100"
+//               alt="Signup"
+//               className="img-fluid h-100 image-signup"
 //               style={{ objectFit: "cover" }}
 //             />
 //           </Box>
-
-//           {/* Forms Starts Here */}
-
-//           <Box className="col-lg-7 col-sm-12 shadow-lg px-3 py-3 signup-form">
+//           <Box className="col-lg-6 col-sm-12 shadow-lg px-3 py-3 signup-form">
 //             <Formik
 //               initialValues={initialValues}
 //               validationSchema={validationSchema}
@@ -117,7 +118,7 @@
 //                       <Field
 //                         as={TextField}
 //                         name="fullName"
-//                         label="FullName"
+//                         label="Full Name"
 //                         variant="outlined"
 //                         className="form-control"
 //                         error={touched.fullName && !!errors.fullName}
@@ -138,7 +139,7 @@
 //                   </div>
 
 //                   <div className="row mt-1 gy-3">
-//                     <div className=" col-lg-6 col-md-6 col-sm-12 px-2">
+//                     <div className="col-lg-6 col-md-6 col-sm-12 px-2">
 //                       <Field
 //                         as={TextField}
 //                         name="password"
@@ -150,7 +151,7 @@
 //                         helperText={touched.password && errors.password}
 //                       />
 //                     </div>
-//                     <div className=" col-lg-6 col-md-6 col-sm-12 px-2">
+//                     <div className="col-lg-6 col-md-6 col-sm-12 px-2">
 //                       <Field
 //                         as={TextField}
 //                         name="confirmPassword"
@@ -213,32 +214,27 @@
 //                     />
 //                   </div>
 
-//                   {/* <div className="mt-1 px-2">
-//                     <InputLabel htmlFor="City">City</InputLabel>
-//                     <FormControl
-//                       variant="outlined"
-//                       className="w-100"
-//                       error={touched.area && !!errors.area}
-//                     >
-//                       <Field as={Select} name="area" className="form-select">
-//                         <MenuItem value="surat">Surat</MenuItem>
-//                         <MenuItem value="vadodara">Vadodara</MenuItem>
-//                         <MenuItem value="ahemdabad">Ahemdabad</MenuItem>
-//                       </Field>
-//                       <ErrorMessage
-//                         name="area"
-//                         component="div"
-//                         className="error-message"
-//                       />
-//                     </FormControl>
-//                   </div> */}
+//                   <div className="mt-2 px-2">
+//                     <label htmlFor="role">Role</label>
+//                     <Field as="select" name="role" className="form-select">
+//                       <option value="">Select Role</option>
+//                       <option value="admin">Admin</option>
+//                       <option value="client">Client</option>
+//                     </Field>
+//                     <ErrorMessage
+//                       name="role"
+//                       component="div"
+//                       className="error-message"
+//                     />
+//                   </div>
 
-//                   <div className="mt-1 px-2">
+//                   {/* <div className="mt-2 px-2">
 //                     <InputLabel htmlFor="role">Role</InputLabel>
 //                     <FormControl
 //                       variant="outlined"
 //                       className="w-100"
-//                       error={touched.role && !!errors.role}
+//                       // value={'value'}
+//                       error={touched.role && !! errors.role}
 //                     >
 //                       <Field as={Select} name="role" className="form-select">
 //                         <MenuItem value="admin">Admin</MenuItem>
@@ -250,8 +246,9 @@
 //                         className="error-message"
 //                       />
 //                     </FormControl>
-//                   </div>
+//                   </div> */}
 
+                
 //                   <Box className="text-center mt-3 mb-3">
 //                     <button type="submit" className="btn btn-primary w-50">
 //                       Sign Up
@@ -269,6 +266,7 @@
 
 // export default SignUp;
 
+
 import React from "react";
 import signupimage from "../Images/tos.webp";
 import {
@@ -279,16 +277,11 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-  Select,
-  MenuItem,
-  InputLabel,
 } from "@mui/material";
 import { Field, Form, Formik, ErrorMessage } from "formik";
 import { NavLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { useEffect } from "react";
 import axios from "axios";
-
 
 const SignUp = () => {
   const initialValues = {
@@ -310,38 +303,28 @@ const SignUp = () => {
     confirmPassword: Yup.string()
       .required("Password is not matched")
       .oneOf([Yup.ref("password"), null], "Passwords must match"),
-    phone: Yup.number().required("Please Enter the phone number"),
+    phone: Yup.string().required("Please Enter the phone number"),
     gender: Yup.string().required("Please select your gender"),
     role: Yup.string().required("Please select your role"),
   });
+
   let navigate = useNavigate();
 
-  const handleSubmit = (values, actions) => {
-    console.log(values);
-    actions.resetForm();
-    navigate("/login");
+  const handleSubmit = async (values, actions) => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/user/create", values);
+      console.log('Response:', response.data);
+      actions.resetForm(); 
+      navigate("/login");
+    } catch (error) {
+      console.error('Error creating user:', error);
+    }
   };
-
-  useEffect(() => {
-    const getapi = async () => {
-      try {
-        let data = await axios.get("localhost:3000/api/user/create", {
-          headers: {
-            Authorization: "Bearer ",
-          },
-        });
-        console.log(data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getapi();
-  }, []);
 
   return (
     <>
       <Container className="signup-container">
-        <div className="row gx-0 p-0 m-0" style={{display:'flex',justifyContent:'center'}}>
+        <div className="row gx-0 p-0 m-0" style={{ display: "flex", justifyContent: "center" }}>
           <Box className="col-lg-4 col-sm-12 m-0 p-0">
             <img
               src={signupimage}
@@ -354,7 +337,7 @@ const SignUp = () => {
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={handleSubmit}
+              onSubmit={handleSubmit} // Handle form submission
             >
               {({ errors, touched }) => (
                 <Form className="mx-auto rounded-3">
@@ -425,8 +408,12 @@ const SignUp = () => {
                         type="password"
                         autoComplete="current-password"
                         className="form-control"
-                        error={touched.confirmPassword && !!errors.confirmPassword}
-                        helperText={touched.confirmPassword && errors.confirmPassword}
+                        error={
+                          touched.confirmPassword && !!errors.confirmPassword
+                        }
+                        helperText={
+                          touched.confirmPassword && errors.confirmPassword
+                        }
                       />
                     </div>
                   </div>
@@ -468,7 +455,7 @@ const SignUp = () => {
                       as={TextField}
                       name="phone"
                       label="Phone"
-                      type="number"
+                      type="text"
                       autoComplete="current-password"
                       className="form-control"
                       error={touched.phone && !!errors.phone}
@@ -476,23 +463,18 @@ const SignUp = () => {
                     />
                   </div>
 
-                  <div className="mt-1 px-2">
-                    <InputLabel htmlFor="role">Role</InputLabel>
-                    <FormControl
-                      variant="outlined"
-                      className="w-100"
-                      error={touched.role && !!errors.role}
-                    >
-                      <Field as={Select} name="role" className="form-select">
-                        <MenuItem value="admin">Admin</MenuItem>
-                        <MenuItem value="client">Client</MenuItem>
-                      </Field>
-                      <ErrorMessage
-                        name="role"
-                        component="div"
-                        className="error-message"
-                      />
-                    </FormControl>
+                  <div className="mt-2 px-2">
+                    <label htmlFor="role">Role</label>
+                    <Field as="select" name="role" className="form-select">
+                      <option value="">Select Role</option>
+                      <option value="admin">Admin</option>
+                      <option value="client">Client</option>
+                    </Field>
+                    <ErrorMessage
+                      name="role"
+                      component="div"
+                      className="error-message"
+                    />
                   </div>
 
                   <Box className="text-center mt-3 mb-3">
@@ -511,6 +493,4 @@ const SignUp = () => {
 };
 
 export default SignUp;
-
-
 
