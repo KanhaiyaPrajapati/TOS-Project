@@ -1,0 +1,298 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+body {
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Container styling */
+.dashboard-container {
+  display: flex;
+  height: 100vh; /* Ensure full viewport height */
+}
+
+/* Sidebar styling */
+.sidebar {
+  min-width: 240px;
+  min-height: 100vh;
+  background-color: #121621;
+  color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sidebar .logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  font-size: 30px;
+  background-color: #121621;
+}
+.sidebar .sidebar-menu {
+  margin-top: 20px;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  width: 100%;
+}
+.sidebar .sidebar-menu .menu-item {
+  width: 100%;
+}
+.sidebar .sidebar-menu .menu-item a {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  text-decoration: none;
+  color: whitesmoke;
+  width: 100%;
+  box-sizing: border-box;
+}
+.sidebar .sidebar-menu .menu-item a:hover {
+  background-color: #1a1f2e;
+}
+.sidebar .sidebar-menu .menu-item a.active {
+  background-color: #635bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.sidebar .logout-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 260px;
+}
+
+/* Main content styling */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Grow to fill available space */
+}
+.main-content .header {
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+.main-content .header .search-bar {
+  display: flex;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+.main-content .header .search-bar input {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 5px;
+}
+.main-content .header .profile-menu {
+  border: 2px solid blue;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.main-content .content {
+  flex-grow: 1; /* Grow to fill available space */
+  overflow-y: auto; /* Add scroll if content overflows */
+  padding: 20px;
+}
+
+.main-header {
+  height: 100vh;
+  width: 100vh;
+  background-color: #1a1f2e;
+}
+
+.login-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+@media (max-width: 576px) {
+  .login-wrapper {
+    padding: 1rem;
+  }
+  .login-wrapper .login-image {
+    height: auto;
+    width: 100%;
+  }
+}
+
+.signup-container {
+  max-width: 600px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pagenotfound {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 0rem !important;
+  line-height: 0.2375em !important;
+  letter-spacing: 0.00938em !important;
+  color: rgba(0, 0, 0, 0.87);
+  box-sizing: border-box;
+  position: relative;
+  cursor: text;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  border-radius: 4px;
+}
+
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+  height: 14px !important;
+}
+
+.error-message {
+  color: #d32f2f !important;
+  font-weight: 400 !important;
+}
+
+.dashboard-news-wrapper {
+  background-color: #121621;
+  color: white;
+  line-height: 25px;
+  text-align: start;
+}
+
+.forgotpass-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 50% !important;
+}
+.forgotpass-wrapper .fogot-text {
+  margin: 0px;
+  font-weight: 700;
+  line-height: 1.5;
+  font-size: 1.2rem;
+  font-family: "Public Sans", sans-serif !important;
+}
+.forgotpass-wrapper h6 {
+  margin-top: 10px !important;
+  margin: 0px;
+  line-height: 1.578;
+  font-size: 0.95rem;
+  font-family: "Public Sans", sans-serif !important;
+  font-weight: 600;
+  color: rgb(99, 115, 129);
+  margin-bottom: 18px;
+}
+
+.resetpassword-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 28vh;
+  margin-top: 50px;
+  box-shadow: rgba(145, 158, 171, 0.2) 0px 0px 2px 0px, rgba(145, 158, 171, 0.12) 0px 12px 24px -4px;
+  border-radius: 20px !important;
+}
+
+.data-grid {
+  height: auto;
+  width: auto;
+  color: white;
+  border-radius: 20px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.data-grid .MuiDataGrid-root {
+  background-color: #1e1e2d;
+  color: #fff;
+  text-align: center !important;
+}
+.data-grid .MuiDataGrid-root .MuiDataGrid-columnsContainer {
+  background-color: #3b3b51;
+}
+.data-grid .MuiDataGrid-root .MuiDataGrid-columnHeader {
+  color: black;
+  font-weight: bold !important;
+  font-size: 16px !important;
+}
+.data-grid .MuiDataGrid-root .MuiDataGrid-columnHeader:hover {
+  background-color: #6a6a8d;
+  cursor: pointer;
+}
+.data-grid .MuiDataGrid-root .MuiDataGrid-cell {
+  color: #fff;
+}
+.data-grid .MuiDataGrid-root .MuiDataGrid-cell:hover {
+  background-color: #3b3b51;
+  cursor: pointer;
+}
+.data-grid .MuiDataGrid-root .MuiDataGrid-row:nth-of-type(odd) {
+  background-color: #2a2a3d;
+}
+.data-grid .MuiDataGrid-root .MuiDataGrid-row:nth-of-type(even) {
+  background-color: #1e1e2d;
+}
+.data-grid .MuiDataGrid-root .MuiDataGrid-row:hover {
+  background-color: #4a4a6a;
+}
+.data-grid .MuiDataGrid-root .MuiDataGrid-footerContainer {
+  background-color: white;
+  color: #4a4a6a;
+}
+.data-grid .MuiDataGrid-root .MuiCheckbox-root {
+  color: #4a4a6a;
+}
+.data-grid .MuiDataGrid-root .MuiTablePagination-root {
+  color: #4a4a6a;
+}
+
+@media (max-width: 576px) {
+  h5, h6 {
+    font-size: 0.63rem;
+  }
+}
+
+.error-message {
+  font-size: 0.875rem;
+}
+
+.nav-link {
+  color: rgb(22, 119, 255);
+  text-decoration: none;
+  margin-left: 7px;
+}
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 992px) {
+  .login-image {
+    height: 140px !important;
+    width: 100%;
+    -o-object-fit: contain;
+       object-fit: contain;
+  }
+  .login-form {
+    margin: 0;
+    box-shadow: none;
+  }
+}/*# sourceMappingURL=style.css.map */
