@@ -24,7 +24,7 @@ body {
 
 /* Sidebar styling */
 .sidebar {
-  min-width: 240px;
+  min-width: 220px;
   min-height: 100vh;
   background-color: #121621;
   color: whitesmoke;
@@ -45,6 +45,7 @@ body {
     gap: 5px;
     flex-direction: column;
     width: 100%;
+    font-size: 20px;
     .menu-item {
       width: 100%;
       a {
@@ -59,9 +60,10 @@ body {
           background-color: #1a1f2e;
         }
         &.active {
-          background-color: #635bff;
-          color: white; // Change color for active link
-          border-radius: 5px;
+          // background-color: #635bff;
+          background-color: #CCCCCC       ;
+          color: black; // Change color for active link
+          border-radius: 2px;
           cursor: pointer;
         }
       }
@@ -116,7 +118,7 @@ body {
   .content {
     flex-grow: 1; /* Grow to fill available space */
     overflow-y: auto; /* Add scroll if content overflows */
-    padding: 20px;
+    padding: 5px;
   }
 }
 
@@ -153,6 +155,13 @@ body {
 
     @media (max-width: 576px) {
       height: 180px !important;
+      width: 100%;
+      object-fit: cover !important;
+      border-radius: 5px !important;
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+      height: 100% !important;
       width: 100%;
       object-fit: cover !important;
       border-radius: 5px !important;
@@ -260,11 +269,13 @@ button {
     animation: slideIn 0.8s ease-out;
 
     @media (max-width: 576px) {
-      padding: 0.5rem !important;
+      padding: 1rem !important;
     }
 
     @media (min-width: 768px) and (max-width: 991px) {
       padding: 1rem !important;
+      width: 80% !important;
+
     }
 
     @media (min-width: 992px) and (max-width: 1199px) {
@@ -287,7 +298,8 @@ button {
     }
 
     @media (min-width: 768px) and (max-width: 991px) {
-      width: 100%;
+      width: 80%;
+      margin-left: 57px !important;
       height: auto;
     }
 
@@ -347,9 +359,6 @@ button {
   }
 }
 
-
-
-
 // Page not Found starts here
 
 .pagenotfound{
@@ -390,8 +399,6 @@ button {
   height: 9px !important;
 }
 
-
-
 .error-message{
   color: #d32f2f !important;
   font-weight: 400 !important;
@@ -399,9 +406,9 @@ button {
 }
 
 .dashboard-news-wrapper{
-  background-color: #121621;
-  color: white;
-  line-height: 25px;
+  // background-color: #121621;
+  color: black;
+  line-height: 18px;
   text-align: start;
 }
 
@@ -438,7 +445,7 @@ button {
 //? Reset Password starts Here
 
 .resetpassword-wrapper{
-    display: flex;
+    display:flex;
     justify-content:center;
     align-items: center;
     min-height: 28vh;
@@ -447,12 +454,12 @@ button {
     border-radius:20px !important;
 }
 
-//! Data Table Styling Starts Here 
+//? Data Table Styling Starts Here 
 
 // DataTable.scss
 .data-grid {
-  height: auto;
-  width: auto;
+  // height: auto;
+  // width: auto;
   color: white;
   // border: 1px solid #ddd;
   border-radius:20px;
@@ -518,8 +525,110 @@ button {
     
   }
 }
-//! Media Query Starts Here
 
+//! Modal Animation Sass
+
+.modal-enter {
+  opacity: 0;
+}
+.modal-enter-active {
+  opacity: 1;
+  transition: opacity 500ms;
+}
+.modal-exit {
+  opacity: 1;
+}
+.modal-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+
+//!Loader
+
+
+
+
+
+
+//table responsive sass
+.responsive-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 75vw;
+  margin: 0 auto;
+}
+
+//   @media (max-width: 768px) {
+//     .MuiTable-root {
+//       display: block;
+//     }
+
+//     .MuiTableHead-root,
+//     .MuiTableBody-root {
+//       display: block;
+//     }
+
+//     .MuiTableRow-root {
+//       display: flex;
+//       flex-direction: column;
+//       margin-bottom: 10px;
+//     }
+
+//     .MuiTableCell-root {
+//       display: block;
+//       text-align: right;
+//       position: relative;
+//       padding-left: 50%;
+//       white-space: nowrap;
+
+//       &:before {
+//         content: attr(data-label);
+//         position: absolute;
+//         left: 0;
+//         width: 45%;
+//         padding-left: 10px;
+//         font-weight: bold;
+//         text-align: left;
+//       }
+//     }
+//   }
+// }
+
+
+//!
+.css-1jzxx4b-MuiTableCell-root{
+  border-bottom: none !important;
+  border-collapse: collapse !important;
+}
+.css-1oc0wiq-MuiTableCell-root{
+  padding: 6px !important;
+  font-size: 15px !important;
+}
+.css-1f3h03m-MuiTableCell-root.MuiTableCell-body{
+  font-size: 15px !important;
+}
+
+.css-pdct74-MuiTablePagination-selectLabel{
+  padding-top: 14px !important;
+}
+.css-levciy-MuiTablePagination-displayedRows{
+  padding-top: 17px !important;
+}
+.css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar{
+  min-height: 52px !important;
+  padding-right: 2px !important;
+  margin-top: 5px !important;
+  // border-top: 0.5px solid gray;
+  // background:   !important;
+  // color: white !important;
+}
+
+
+
+
+//! Media Query Starts Here
 h5, h6 {
   @media (max-width: 576px) {
     font-size: 0.63rem; // Adjust as needed

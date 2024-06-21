@@ -25,7 +25,7 @@ const ForgotPassword = () => {
   return (
     <>
       <Container
-        className="w-25 forgotpass-wrapper p-0 m-0"
+        className="forgotpass-wrapper p-0 m-0"
       >
         <div className="row">
           <div className="text-center pt-3">

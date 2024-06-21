@@ -30,7 +30,7 @@ const ResetPassWord = () => {
   };
   return (
     <>
-        <Container className='px-3 py-3 w-75 resetpassword-wrapper border border-1'>
+        <Container className='px-3 py-3 resetpassword-wrapper border border-1'>
         <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}

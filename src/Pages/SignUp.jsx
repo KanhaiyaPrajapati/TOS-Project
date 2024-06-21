@@ -248,7 +248,6 @@
 //                     </FormControl>
 //                   </div> */}
 
-                
 //                   <Box className="text-center mt-3 mb-3">
 //                     <button type="submit" className="btn btn-primary w-50">
 //                       Sign Up
@@ -266,8 +265,7 @@
 
 // export default SignUp;
 
-
-import React from "react";
+import React, { useEffect } from "react";
 import signupimage from "../Images/tos.webp";
 import {
   Box,
@@ -282,8 +280,22 @@ import { Field, Form, Formik, ErrorMessage } from "formik";
 import { NavLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import axios from "axios";
+import { logDOM } from "@testing-library/react";
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "../Redux/slices/Slices";
 
 const SignUp = () => {
+  let navigate = useNavigate();
+  let dispatch = useDispatch();
+
+  const userState = useSelector((state) => state.NewsApi.user);
+  useEffect(() => {
+    if (userState && userState.length > 0) {
+      console.log("User Full Name:", userState[0].newUser.fullName);
+      console.log("User Email:", userState[0].newUser.email);
+    }
+  }, [userState]);
+
   const initialValues = {
     fullName: "",
     email: "",
@@ -293,6 +305,9 @@ const SignUp = () => {
     gender: "",
     role: "",
   };
+
+  // const loginState = useSelector((state) => state.NewsApi.user);
+  // console.log("==========================>",loginState.fullName);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -308,23 +323,29 @@ const SignUp = () => {
     role: Yup.string().required("Please select your role"),
   });
 
-  let navigate = useNavigate();
-
   const handleSubmit = async (values, actions) => {
     try {
-      const response = await axios.post("http://localhost:3000/api/user/create", values);
-      console.log('Response:', response.data);
-      actions.resetForm(); 
+      const response = await axios.post(
+      "http://localhost:3000/api/user/create",values);
+      console.log(values);
+      console.log("Response:", response.data);
+      let data = localStorage.setItem('data',JSON.stringify(values));
+      console.log(data);
+      dispatch(signup(response.data));
+      actions.resetForm();
       navigate("/login");
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error("Error creating user:", error);
     }
   };
 
   return (
     <>
       <Container className="signup-container">
-        <div className="row gx-0 p-0 m-0" style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          className="row gx-0 p-0 m-0"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
           <Box className="col-lg-4 col-sm-12 m-0 p-0">
             <img
               src={signupimage}
@@ -468,7 +489,7 @@ const SignUp = () => {
                     <Field as="select" name="role" className="form-select">
                       <option value="">Select Role</option>
                       <option value="admin">Admin</option>
-                      <option value="client">Client</option>
+                      {/* <option value="client">Client</option> */}
                     </Field>
                     <ErrorMessage
                       name="role"
@@ -493,4 +514,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-

@@ -3,6 +3,6 @@ import NewsReducer from '../slices/Slices'
 
 export default configureStore({
     reducer:{
-       signup:NewsReducer 
+       NewsApi:NewsReducer 
     }
 })
