@@ -151,6 +151,9 @@ import { Formik, Form, Field } from 'formik';
 import TablePagination from '@mui/material/TablePagination';
 import Swal from 'sweetalert2';
 import { getAllAdminData } from "./api";
+import Aos from "aos";
+import 'aos/dist/aos.css';
+
 
 
 const Users = () => {
@@ -346,6 +349,8 @@ const Users = () => {
 //   setSmShow(false);
 //  };
 
+  //? DeleteAdminDatabyID to delete the own Data ======================
+
 const DeleteAdminDatabyID = async (id, token, auth, setshowdata, dispatch) => {
   let obj = {
     email: '',
@@ -470,20 +475,37 @@ const DeleteAdminDatabyID = async (id, token, auth, setshowdata, dispatch) => {
   //? Pagination function 
  const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+ useEffect(() => {
+  Aos.init({
+    duration:2200,
+  });
+}, [])
+
+useEffect(() => {
+  setIsLoading(true);
+  getAllAdminData(auth, setshowadmindata, dispatch)
+    .then(() => {
+      setIsLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      setIsLoading(false);
+    });
+}, [dispatch, token]);
+
   return (
     <>
-      {isLoading && (
+    {isLoading ? (
         <HashLoader
           color="#121621"
           style={{
             height: "100vh",
             display: "flex",
             justifyContent: "center",
-
           }}
         />
-      )}
-      <div className="responsive-container mt-5">
+      ) :(
+      <div className="responsive-container mt-5" data-aos="fade-down">
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
@@ -528,7 +550,6 @@ const DeleteAdminDatabyID = async (id, token, auth, setshowdata, dispatch) => {
                 <StyledTableCell align="center">Gender</StyledTableCell>
                 <StyledTableCell align="center">Role</StyledTableCell>
                 <StyledTableCell align="center">Action</StyledTableCell>
-                {/* <StyledTableCell align="center">Area</StyledTableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -562,7 +583,6 @@ const DeleteAdminDatabyID = async (id, token, auth, setshowdata, dispatch) => {
                       onClick={()=>setSmShow(true)}
                     /> */}
                   </StyledTableCell>
-                  {/* <StyledTableCell align="center">{data.area}</StyledTableCell> */}
                 </StyledTableRow>
               ))}
             </TableBody>
@@ -713,6 +733,7 @@ const DeleteAdminDatabyID = async (id, token, auth, setshowdata, dispatch) => {
         </Modal>
         </div>
       </div>
+      )}
     </>
   );
 };

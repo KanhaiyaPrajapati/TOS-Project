@@ -70,11 +70,11 @@
 //     const [showfullname, setshowfullname] = useState('');
 //     const [email, setemail] = useState('')
 //     const open = Boolean(anchorEl);
-    
+
 //     const handleClick = (event) => {
 //       setAnchorEl(event.currentTarget);
 //     };
-    
+
 //     const handleClose = () => {
 //       setAnchorEl(null);
 //     };
@@ -105,7 +105,7 @@
 //           console.log("Error fetching user data:", error);
 //         }
 //       };
-//       getuserdata(); 
+//       getuserdata();
 //       }, []);
 
 //     return (
@@ -252,7 +252,7 @@
 //                   overflow: "visible",
 //                   filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
 //                   mt: 1.5,
-                  
+
 //                   // maxWidth:100,
 //                   // maxHeight:100,
 //                   "& .MuiAvatar-root": {
@@ -337,9 +337,16 @@
 //   };
 //   return NewComponent;
 // };
-
+//! BAckup code starts here
 import React, { useEffect, useState } from "react";
-import { Drawer, IconButton, InputBase } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Drawer,
+  IconButton,
+  InputBase,
+} from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import { NavLink } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -360,14 +367,9 @@ import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 import Settings from "@mui/icons-material/Settings";
 import HomeIcon from "@mui/icons-material/Home";
-import { useSelector } from "react-redux";
 import axios from "axios";
-import { TreeView, TreeItem } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Dashboardicon from '../Images/dashboard4.png';
-import reporter from '../Images/reporter.png';
-;
+import Dashboardicon from "../Images/dashboardnew.svg";
 
 // Custom styled components for the search bar
 const Search = styled("div")(({ theme }) => ({
@@ -394,6 +396,8 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  
+  
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -409,18 +413,37 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const SvgLogo = () => (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M 4.63564 15.8644 L 6.94797 13.552 L 6.95038 13.5496 H 11.3006 L 9.56969 15.2806 L 9.12278 15.7275 L 7.35024 17.5 L 7.56977 17.7201 L 17.5 27.6498 L 27.6498 17.5 L 25.8766 15.7275 L 25.7518 15.602 L 23.6994 13.5496 H 28.0496 L 28.052 13.552 L 29.8644 15.3644 L 32 17.5 L 17.5 32 L 3 17.5 L 4.63564 15.8644 Z M 17.5 3 L 25.8784 11.3784 H 21.5282 L 17.5 7.35024 L 13.4718 11.3784 H 9.12158 L 17.5 3 Z"
+      fill="rgb(9, 88, 217)"
+    />
+    <path
+      d="M 6.94549 13.5496 L 6.9479 13.552 L 9.12272 15.7275 L 17.4999 24.1041 L 28.0544 13.5496 H 6.94549 Z"
+      fill="rgb(22, 119, 255)"
+    />
+  </svg>
+);
+
+
 let token = localStorage.getItem("token");
 export const Hoc = (Component) => {
   const NewComponent = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [showfullname, setshowfullname] = useState('');
-    const [email, setemail] = useState('')
+    const [showfullname, setshowfullname] = useState("");
+    const [email, setemail] = useState("");
     const open = Boolean(anchorEl);
-    
+
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
-    
+
     const handleClose = () => {
       setAnchorEl(null);
     };
@@ -438,21 +461,24 @@ export const Hoc = (Component) => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       };
-        const getuserdata = async () => {
+      const getuserdata = async () => {
         try {
           let response = await axios.get(
             "http://localhost:3000/api/user/userdata/",
             auth
           );
-          console.log('getuserdata====================>', response.data.message);
-          setshowfullname(response.data.message.fullName)
-          setemail(response.data.message.email)
+          console.log(
+            "getuserdata====================>",
+            response.data.message
+          );
+          setshowfullname(response.data.message.fullName);
+          setemail(response.data.message.email);
         } catch (error) {
           console.log("Error fetching user data:", error);
         }
       };
-      getuserdata(); 
-      }, []);
+      getuserdata();
+    }, []);
 
     return (
       <div className="dashboard-container">
@@ -460,16 +486,8 @@ export const Hoc = (Component) => {
           <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
             <div className="sidebar">
               <div className="logo">
-                <h2>
-                  <img
-                    src={logo}
-                    className="bg-white"
-                    alt=""
-                    height={28}
-                    width={32}
-                  />{" "}
-                  TOS
-                </h2>
+                <SvgLogo className="bg-white" />
+                <h2 style={{ fontSize: "25px", marginTop: "5px" }}>TOS</h2>
               </div>
               <div className="sidebar-menu">
                 <div className="menu-item">
@@ -488,7 +506,7 @@ export const Hoc = (Component) => {
                     </span>
                   </NavLink>
                 </div>
-                
+
                 <div className="menu-item">
                   <NavLink to="/subadmin" onClick={toggleDrawer}>
                     <span>
@@ -517,60 +535,118 @@ export const Hoc = (Component) => {
           <div className="sidebar">
             <div className="logo">
               <h2>
-                <img
-                  src={logo}
-                  className="bg-white"
-                  alt=""
-                  height={28}
-                  width={32}
-                />{" "}
-                TOS
+                  <span style={{ fontWeight: "500" }}>
+                    <SvgLogo className="bg-white" />
+                  TOS
+                </span>
               </h2>
             </div>
             <div className="sidebar-menu">
-              <h6 className=" text-white ms-3 mb-4">Main Menu</h6>
+              <h6
+                className="ms-3 mb-2"
+                style={{ color: " rgb(38, 38, 38)", fontWeight: "600" }}
+              >
+                Main Menu
+              </h6>
               <div className="menu-item">
                 <NavLink to="/dashboard">
                   <span>
-                    {/* <DashboardIcon className="icons" /> */}
-                    <img src={Dashboardicon} alt="" className="img-fluid me-1" height={20} width={20} />
+                      <DashboardIcon/>
                     Dashboard
                   </span>
                 </NavLink>
               </div>
-              <div className="menu-item">
-                <NavLink to="/user">
-                  <span>
-                    <AccountCircleIcon />Users
-                  </span>
-                </NavLink>
-              </div>
-              
-              <div className="menu-item">
-                <NavLink to="/subadmin">
-                  <span>
-                  <AccountCircleIcon />
-                    SubAdmin
-                  </span>
-                </NavLink>
-              </div>
-              <div className="menu-item">
-                <NavLink to="/reporter">
-                  <span>
-                    {/* <FeedIcon /> */}
-                    {/* <img src={reporter} alt="" height={20} width={20} style={{color:'black'}} /> */}
+              <h6
+                className="ms-3 mb-2"
+                style={{ color: " rgb(38, 38, 38)", fontWeight: "600" }}
+              >
+                Pages
+              </h6>
+              {/* accordian starts here */}
+
+              <div className="sidebar-menu-accordian">
+                <Accordion
+                  defaultExpanded
+                  style={{
+                    width: "260px",
+                    background: "transparent",
+                    color: "white",
+                  }}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon style={{ color: "white" }} />}
+                    aria-controls="panel1-content"
+                    id="panel1-header"
+                  >
                     <AccountCircleIcon />
-                    Reporter
-                  </span>
-                </NavLink>
+                    Users
+                  </AccordionSummary>
+                  <AccordionDetails
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      textDecoration: "none",
+                    }}
+                  >
+                    <div className="menu-item-accordian">
+                      <NavLink to="/user">
+                        <span>User</span>
+                      </NavLink>
+                    </div>
+                    <div className="menu-item-accordian">
+                      <NavLink to="/subAdmin">
+                        <span>SubAdmin</span>
+                      </NavLink>
+                    </div>
+
+                    <div className="menu-item-accordian">
+                      <NavLink to="/Reporter">
+                        <span>Reporter</span>
+                      </NavLink>
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
               </div>
+
               <div className="menu-item">
+                <h6
+                  className="ms-3 mb-2"
+                  style={{ color: "rgb(38, 38, 38)", fontWeight:"600"}}
+                >
+                  News
+                </h6>
                 <NavLink to="/newsfeed">
                   <span>
                     <FeedIcon />
                     NewsFeed
                   </span>
                 </NavLink>
+              </div>
+              <Divider style={{ color: "rgb(38, 38, 38)" }} />
+              <h6
+                  className="ms-3 mb-2"
+                  style={{ color: "rgb(38, 38, 38)", fontWeight:"600"}}
+                >
+                  Profile
+                </h6>
+              <div style={{display:'flex',justifyContent:'start',alignItems:'start',marginTop:'320px',marginLeft:'25px'}}>
+
+                
+                <div className="profile-menu">
+                  <img
+                    src={img1}
+                    alt=""
+                    className="img-fluid rounded-pill"
+                    width={40}
+                    height={40}
+                  
+                  />
+                </div>
+                    
+                <div className="ms-2">
+                  <h6 style={{color:'rgb(38, 38, 38)'}}>JWT User</h6>
+                    <h6 className="header-profile">UI/UX Designer</h6>
+                </div>
               </div>
             </div>
           </div>
@@ -587,7 +663,7 @@ export const Hoc = (Component) => {
                   <SearchIcon />
                 </SearchIconWrapper>
                 <StyledInputBase
-                  placeholder="Search…"
+                  placeholder="Ctrl+K"
                   inputProps={{ "aria-label": "search" }}
                 />
               </Search>
@@ -603,10 +679,11 @@ export const Hoc = (Component) => {
                 <IconButton
                   onClick={handleClick}
                   size="small"
-                  sx={{ ml: 2, }}
+                  sx={{ ml: 2 }}
                   aria-controls={open ? "account-menu" : undefined}
                   aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}>
+                  aria-expanded={open ? "true" : undefined}
+                >
                   <Avatar sx={{ width: 45, height: 45 }}>
                     <div className="profile-menu">
                       <img
@@ -657,8 +734,8 @@ export const Hoc = (Component) => {
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
               <MenuItem onClick={handleClose}>
-              {showfullname} <br />
-              {email}
+                {showfullname} <br />
+                {email}
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleClose}>
@@ -715,5 +792,4 @@ export const Hoc = (Component) => {
   };
   return NewComponent;
 };
-
-
+//! Backup code Ends Here

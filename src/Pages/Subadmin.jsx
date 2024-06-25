@@ -1,241 +1,5 @@
-// import * as Yup from "yup";
-// import React, { useEffect, useState } from "react";
-// import {
-//   Box,
-//   Container,
-//   TextField,
-//   FormControl,
-//   FormControlLabel,
-//   Radio,
-//   RadioGroup,
-// } from "@mui/material";
-// import { Field, Form, Formik, ErrorMessage } from "formik";
-// import { Hoc } from "../Components/Hoc";
-// import Button from 'react-bootstrap/Button';
-// import Modal from 'react-bootstrap/Modal';
-
-// const Subadmin = () => {
-//   const initialValues = {
-//     fullName: "",
-//     email: "",
-//     password: "",
-//     confirmPassword: "",
-//     phone: "",
-//     gender: "",
-//     role: "",
-//     area:"",
-//   };
-//   const validationSchema = Yup.object().shape({
-//     email: Yup.string()
-//       .email("Invalid email address")
-//       .required("Email is required"),
-//     fullName: Yup.string().required("Please Enter the Name"),
-//     password: Yup.string().required("Password is required"),
-//     confirmPassword: Yup.string()
-//       .required("Password is not matched")
-//       .oneOf([Yup.ref("password"), null], "Passwords must match"),
-//     phone: Yup.string().required("Please Enter the phone number"),
-//     gender: Yup.string().required("Please select your gender"),
-//     role: Yup.string().required("Please select your role"),
-//     area: Yup.string().required("Please select your area"),
-    
-//   });
-
-//   const handleSubmit = async (values, actions) => {
-//     // try {
-//     //   const response = await axios.post(
-//     //   "http://localhost:3000/api/user/create",values);
-//     //   console.log(values);
-//     //   console.log("Response:", response.data);
-//     //   let data = localStorage.setItem('data',JSON.stringify(values));
-//     //   console.log(data);
-//     //   dispatch(signup(response.data));
-//     //   actions.resetForm();
-//     //   navigate("/login");
-//     // } catch (error) {
-//     //   console.error("Error creating user:", error);
-//     // }
-//   };
-//   const [show, setShow] = useState(false);
-
-//   const handleClose = () => setShow(false);
-//   const handleShow = () => setShow(true);
-
-
-//   return (
-//     <>
-//     <button className="btn btn-warning" onClick={handleShow}>SubAdmin</button>
-//         <Modal show={show} onHide={handleClose}>
-//         <Modal.Header closeButton>
-//           <Modal.Title>Modal heading</Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
-//         <Modal.Footer>
-//           <Button variant="secondary" onClick={handleClose}>
-//             Close
-//           </Button>
-//           <Button variant="primary" onClick={handleClose}>
-//             Save Changes
-//           </Button>
-//         </Modal.Footer>
-//       </Modal>
-//     <Container className="signup-container">
-//         <div
-//           className="row gx-0 p-0 m-0"
-//           style={{ display: "flex", justifyContent: "center" }}>
-//             <Box className="col-lg-6 col-sm-12 shadow-lg px-3 py-3 signup-form">
-//             <Formik
-//               initialValues={initialValues}
-//               validationSchema={validationSchema}
-//               onSubmit={handleSubmit} // Handle form submission
-//             >
-//               {({ errors, touched }) => (
-//                 <Form className="mx-auto rounded-3">
-//                   <div className="d-flex justify-content-between mx-3 my-2">
-//                     <div>
-//                       <h5>SubAdmin Form</h5>
-//                     </div>
-//                    </div>
-//                   <hr />
-//                   <div className="row gy-3 pt-2">
-//                     <div className="col-lg-6 col-md-6 col-sm-12 px-2">
-//                       <Field
-//                         as={TextField}
-//                         name="fullName"
-//                         label="Full Name"
-//                         variant="outlined"
-//                         className="form-control"
-//                         error={touched.fullName && !!errors.fullName}
-//                         helperText={touched.fullName && errors.fullName}
-//                       />
-//                     </div>
-//                     <div className="col-lg-6 col-md-6 col-sm-12 px-2">
-//                       <Field
-//                         as={TextField}
-//                         name="email"
-//                         label="Email Address"
-//                         variant="outlined"
-//                         className="form-control"
-//                         error={touched.email && !!errors.email}
-//                         helperText={touched.email && errors.email}
-//                       />
-//                     </div>
-//                   </div>
-//                   <div className="row mt-1 gy-3">
-//                     <div className="col-lg-6 col-md-6 col-sm-12 px-2">
-//                       <Field
-//                         as={TextField}
-//                         name="password"
-//                         label="Password"
-//                         type="password"
-//                         autoComplete="current-password"
-//                         className="form-control"
-//                         error={touched.password && !!errors.password}
-//                         helperText={touched.password && errors.password}
-//                       />
-//                     </div>
-//                     <div className="col-lg-6 col-md-6 col-sm-12 px-2">
-//                       <Field
-//                         as={TextField}
-//                         name="confirmPassword"
-//                         label="Confirm Password"
-//                         type="password"
-//                         autoComplete="current-password"
-//                         className="form-control"
-//                         error={
-//                           touched.confirmPassword && !!errors.confirmPassword
-//                         }
-//                         helperText={
-//                           touched.confirmPassword && errors.confirmPassword
-//                         }
-//                       />
-//                     </div>
-//                   </div>
-//                   <div className="mt-2 px-2 ms-1">
-//                     <label htmlFor="gender" className="w-100">
-//                       Gender
-//                     </label>
-//                     <FormControl
-//                       component="fieldset"
-//                       error={touched.gender && !!errors.gender}
-//                     >
-//                       <Field
-//                         as={RadioGroup}
-//                         aria-label="gender"
-//                         name="gender"
-//                         row
-//                       >
-//                         <FormControlLabel
-//                           value="male"
-//                           control={<Radio />}
-//                           label="Male"
-//                         />
-//                         <FormControlLabel
-//                           value="female"
-//                           control={<Radio />}
-//                           label="Female"
-//                         />
-//                       </Field>
-//                       <ErrorMessage
-//                         name="gender"
-//                         component="div"
-//                         className="error-message"
-//                       />
-//                     </FormControl>
-//                   </div>
-//                   <div className="mt-1 px-2">
-//                     <Field
-//                       as={TextField}
-//                       name="phone"
-//                       label="Phone"
-//                       type="text"
-//                       className="form-control"
-//                       error={touched.phone && !!errors.phone}
-//                       helperText={touched.phone && errors.phone}
-//                     />
-//                   </div>
-//                   <div className="mt-3 mb-2 px-2">
-//                     <Field
-//                       as={TextField}
-//                       name="area"
-//                       label="Area"
-//                       type="text"
-//                       className="form-control"
-//                       error={touched.area && !!errors.area}
-//                       helperText={touched.area && errors.area}
-//                     />
-//                   </div>
-//                   <div className="mt-2 px-2">
-//                     <label htmlFor="role">Role</label>
-//                     <Field as="select" name="role" className="form-select">
-//                       <option value="">Select Role</option>
-//                       <option value="subadmin">SubAdmin</option>
-//                       {/* <option value="client">Client</option> */}
-//                     </Field>
-//                     <ErrorMessage
-//                       name="role"
-//                       component="div"
-//                       className="error-message"
-//                     />
-//                   </div>
-//                     <Box className="text-center mt-3 mb-3">
-//                     <button type="submit" className="btn btn-primary w-50">
-//                       Submit
-//                     </button>
-//                   </Box>
-//                 </Form>
-//               )}
-//             </Formik>
-//           </Box>
-//         </div>
-//       </Container>
-//     </>
-//   );
-// };
-// export default Hoc(Subadmin);
-
 import * as Yup from "yup";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -244,11 +8,28 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  TablePagination,
+  Table,
+  Paper,
+  TableRow,
+  styled,
 } from "@mui/material";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Field, Form, Formik, ErrorMessage } from "formik";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { Hoc } from "../Components/Hoc";
+import AddIcon from "@mui/icons-material/Add";
+import { getAllAdminData } from "./api";
+import { useDispatch } from "react-redux";
+import { HashLoader } from "react-spinners";
+import 'aos/dist/aos.css';
+import AOS from 'aos';
 
 const Subadmin = () => {
   const initialValues = {
@@ -263,7 +44,9 @@ const Subadmin = () => {
   };
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email("Invalid email address").required("Email is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
     fullName: Yup.string().required("Please Enter the Name"),
     password: Yup.string().required("Password is required"),
     confirmPassword: Yup.string()
@@ -276,25 +59,239 @@ const Subadmin = () => {
   });
 
   const handleSubmit = async (values, actions) => {
-    // Handle form submission logic here
     console.log(values);
-    actions.setSubmitting(false); // Example: reset the submitting state
-    actions.resetForm(); // Example: reset the form after submission
+    actions.setSubmitting(false);
+    actions.resetForm();
   };
 
+  //? Usestate Define Here
+
   const [show, setShow] = React.useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [ShowSubadminData, setShowSubadminData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading,setIsLoading]=useState(true);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  let token = localStorage.getItem("token");
+  console.log("===================>", token);
+
+  //? Style Component
+
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: "#121621",
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+    "&:last-child td, &:last-child th": {
+      border: 0,
+    },
+  }));
+
+  //? Style components Ends Here
+
+  //?pagination page Change
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  //? Pagination Show
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 5));
+    setPage(0);
+  };
+
+  //? Serach Filter the data
+  const filteredData = ShowSubadminData.filter((data) =>
+    data.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  //? serching the naming by Character
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  //? Pagination function
+  const paginatedData = filteredData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+  const auth = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const dispatch = useDispatch();
+
+  //? Get All SubadminData 
+ 
+  useEffect(() => {
+    AOS.init({
+      duration:2200,
+    });
+  }, [])
+
+  useEffect(() => {
+    setIsLoading(true);
+    getAllAdminData(auth, setShowSubadminData, dispatch)
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      });
+  }, [dispatch, token]);
   return (
     <>
-      <Button variant="warning" onClick={handleShow}>
-        SubAdmin
-      </Button>
-       <Modal show={show} onHide={handleClose} centered>
+     {isLoading ? (
+        <HashLoader
+          color="#121621"
+          style={{
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
+      ) :(
+    
+        <div className="responsive-container mt-5" data-aos="zoom-in-down"> 
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <TableHead>
+                <TableRow className="m-0 p-0">
+                  <StyledTableCell colSpan={7} align="right">
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div>
+                        <button
+                          className="btn btn-outline-secondary"
+                          onClick={handleShow}
+                        >
+                          <AddIcon style={{ fontSize: "18px" }} />
+                          SubAdmin
+                        </button>
+                      </div>
+                      <div>
+                        <TextField
+                          placeholder="Search"
+                          value={searchQuery}
+                          onChange={handleSearch}
+                          variant="outlined"
+                          size="medium"
+                          style={{
+                            marginBottom: "0px",
+                            width: "300px",
+                            backgroundColor: "white",
+                            color: "black",
+                            borderRadius: "3px",
+                            height: "35px",
+                            fontSize: "16px",
+                          }}
+                          InputProps={{
+                            style: {
+                              color: "black",
+                            },
+                            classes: {
+                              notchedOutline: {
+                                borderColor: "white",
+                              },
+                            },
+                          }}
+                          InputLabelProps={{
+                            style: { color: "black" },
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell align="center">ID</StyledTableCell>
+                  <StyledTableCell align="center">FullName</StyledTableCell>
+                  <StyledTableCell align="center">Email</StyledTableCell>
+                  <StyledTableCell align="center">Phone</StyledTableCell>
+                  <StyledTableCell align="center">Gender</StyledTableCell>
+                  <StyledTableCell align="center">Role</StyledTableCell>
+                  <StyledTableCell align="center">Area</StyledTableCell>
+                  <StyledTableCell align="center">Action</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedData.filter((data) => data.role === "subadmin") // Filter only subadmin roles
+                  .map((data, i) => (
+                    <StyledTableRow key={i}>
+                      <StyledTableCell align="center">
+                        {data.user_id}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {data.fullName}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {data.email}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {data.phone}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {data.gender}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {data.role}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {data.area}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <EditIcon
+                          className="text-primary me-1"
+                          style={{ cursor: "pointer" }}
+                        />
+                        <VisibilityIcon
+                          className="ms-1"
+                          style={{ cursor: "pointer" }}
+                        />
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+              </TableBody>
+            </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={filteredData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </TableContainer>
+        </div>
+      )}
+     
+
+      {/* Modal Starts Here */}
+      <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>SubAdmin Form</Modal.Title>
+          <h5>SubAdmin Form</h5>
         </Modal.Header>
         <Modal.Body>
           <Container>
@@ -305,31 +302,29 @@ const Subadmin = () => {
             >
               {({ errors, touched }) => (
                 <Form>
-                  <Box>
+                  <Box sx={{ marginBottom: "15px" }}>
                     <Field
                       as={TextField}
                       name="fullName"
                       label="Full Name"
                       variant="outlined"
                       fullWidth
-                      margin="normal"
                       error={touched.fullName && !!errors.fullName}
                       helperText={touched.fullName && errors.fullName}
                     />
                   </Box>
-                  <Box>
+                  <Box sx={{ marginBottom: "15px" }}>
                     <Field
                       as={TextField}
                       name="email"
                       label="Email Address"
                       variant="outlined"
                       fullWidth
-                      margin="normal"
                       error={touched.email && !!errors.email}
                       helperText={touched.email && errors.email}
                     />
                   </Box>
-                  <Box>
+                  <Box sx={{ marginBottom: "15px" }}>
                     <Field
                       as={TextField}
                       name="password"
@@ -337,12 +332,11 @@ const Subadmin = () => {
                       type="password"
                       variant="outlined"
                       fullWidth
-                      margin="normal"
                       error={touched.password && !!errors.password}
                       helperText={touched.password && errors.password}
                     />
                   </Box>
-                  <Box>
+                  <Box sx={{ marginBottom: "15px" }}>
                     <Field
                       as={TextField}
                       name="confirmPassword"
@@ -350,13 +344,16 @@ const Subadmin = () => {
                       type="password"
                       variant="outlined"
                       fullWidth
-                      margin="normal"
-                      error={touched.confirmPassword && !!errors.confirmPassword}
-                      helperText={touched.confirmPassword && errors.confirmPassword}
+                      error={
+                        touched.confirmPassword && !!errors.confirmPassword
+                      }
+                      helperText={
+                        touched.confirmPassword && errors.confirmPassword
+                      }
                     />
                   </Box>
-                  <Box>
-                    <FormControl component="fieldset" margin="normal" fullWidth>
+                  <Box sx={{ marginBottom: "15px" }}>
+                    <FormControl component="fieldset" fullWidth>
                       <RadioGroup aria-label="gender" name="gender" row>
                         <FormControlLabel
                           value="male"
@@ -376,37 +373,34 @@ const Subadmin = () => {
                       />
                     </FormControl>
                   </Box>
-                  <Box>
+                  <Box sx={{ marginBottom: "15px" }}>
                     <Field
                       as={TextField}
                       name="phone"
                       label="Phone"
                       variant="outlined"
                       fullWidth
-                      margin="normal"
                       error={touched.phone && !!errors.phone}
                       helperText={touched.phone && errors.phone}
                     />
                   </Box>
-                  <Box>
+                  <Box sx={{ marginBottom: "15px" }}>
                     <Field
                       as={TextField}
                       name="area"
                       label="Area"
                       variant="outlined"
                       fullWidth
-                      margin="normal"
                       error={touched.area && !!errors.area}
                       helperText={touched.area && errors.area}
                     />
                   </Box>
-                  <Box>
+                  <Box sx={{ marginBottom: "15px" }}>
                     <Field
                       as="select"
                       name="role"
                       variant="outlined"
                       fullWidth
-                      margin="normal"
                       className="form-select"
                     >
                       <option value="">Select Role</option>
@@ -419,12 +413,16 @@ const Subadmin = () => {
                       className="error-message"
                     />
                   </Box>
-                  <Box mt={3} display="flex" justifyContent="center">
-                    <Button variant="secondary" onClick={handleClose} className="me-2">
+                  <Box mt={2} display="flex" justifyContent="end">
+                    <Button
+                      variant="secondary"
+                      onClick={handleClose}
+                      className="me-2"
+                    >
                       Close
                     </Button>
                     <Button variant="primary" type="submit">
-                      Save Changes
+                      Submit
                     </Button>
                   </Box>
                 </Form>
