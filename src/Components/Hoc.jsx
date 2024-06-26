@@ -337,7 +337,7 @@
 //   };
 //   return NewComponent;
 // };
-//! BAckup code starts here
+//! Backup code starts here
 import React, { useEffect, useState } from "react";
 import {
   Accordion,

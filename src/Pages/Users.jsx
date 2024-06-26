@@ -134,7 +134,7 @@ import Paper from "@mui/material/Paper";
 import { HashLoader } from "react-spinners";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { getAdmindata, getAdmindatabyID, signup } from "../Redux/slices/Slices";
+// import { getAdmindata, getAdmindatabyID, signup } from "../Redux/slices/Slices";
 import { Container, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -153,6 +153,7 @@ import Swal from 'sweetalert2';
 import { getAllAdminData } from "./api";
 import Aos from "aos";
 import 'aos/dist/aos.css';
+import { getAdmindatabyID } from "../Redux/slices/Slices";
 
 
 
@@ -477,7 +478,7 @@ const DeleteAdminDatabyID = async (id, token, auth, setshowdata, dispatch) => {
 
  useEffect(() => {
   Aos.init({
-    duration:2200,
+    duration:1500,
   });
 }, [])
 

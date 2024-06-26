@@ -31,6 +31,7 @@
     "react-spinners": "^0.13.8",
     "react-toastify": "^10.0.5",
     "react-transition-group": "^4.4.5",
+    "redux-thunk": "^3.1.0",
     "sass": "^1.77.3",
     "styled-components": "^6.1.11",
     "sweetalert2": "^11.12.0",
