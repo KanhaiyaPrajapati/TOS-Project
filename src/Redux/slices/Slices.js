@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    user:[],
+    Signupuser:[],
     status:'idle',
     error: null,
     login:[],
-    currantuser: null,
     getadmin:[],
-    getAdmindatabyID:[]
+    getAdmindatabyID:[],
+    getSubADminData:[],
+    getReporterData:[]
 };
 const NewsSlices = createSlice({
     name: 'TOS',
@@ -15,7 +16,7 @@ const NewsSlices = createSlice({
     reducers: {
         signup:(state, action) => {
             console.log("action.payload: " + JSON.stringify(action.payload));
-            state.user.push(action.payload);
+            state.Signupuser.push(action.payload);
             state.status = 'succeeded';
             state.error = null;
         },
@@ -24,10 +25,10 @@ const NewsSlices = createSlice({
             state.login = action.payload;
             state.status='succeeded';
             state.error=null;
-           
         },
         getAdmindata:(state,action)=>{
             state.getadmin = action.payload;
+            console.log("action.payload: " + JSON.stringify(action.payload));
             state.status ='succeeded';
             state.error = null;     
         },
@@ -35,11 +36,21 @@ const NewsSlices = createSlice({
             state.getAdmindatabyID = action.payload;
             state.status ='succeeded';
             state.error = null;
+        },
+        getSubAdmindata:(state,action)=>{
+            state.getSubADminData = action.payload;
+            state.status ='succeeded';
+            state.error = null;
+        },
+        getReporterdata:(state,action)=>{
+            state.getReporterData = action.payload;
+            state.status ='succeeded';
+            state.error = null;
         }
     }
 });
 
-export const { signup,login,getAdmindata,getAdmindatabyID} = NewsSlices.actions;
+export const { signup,login,getAdmindata,getAdmindatabyID,getSubAdmindata,getReporterdata} = NewsSlices.actions;
 export default NewsSlices.reducer;
 
 

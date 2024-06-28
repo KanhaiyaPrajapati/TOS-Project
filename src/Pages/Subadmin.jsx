@@ -462,19 +462,18 @@ import {
   Paper,
   TableRow,
   styled,
+  Modal as MuiModal,
 } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Field, Form, Formik, ErrorMessage } from "formik";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { Hoc } from "../Components/Hoc";
 import AddIcon from "@mui/icons-material/Add";
-import { getAllAdminData } from "./api";
+import { getAllAdminDataSubAdmin } from "./api";
 import { useDispatch } from "react-redux";
 import { HashLoader } from "react-spinners";
 import "aos/dist/aos.css";
@@ -484,8 +483,12 @@ import deleteicon from "../Images/deleticon8.png";
 import editicon from "../Images/icons8-edit-64.png";
 import viewicon from "../Images/icons8-view-64.png";
 import Swal from "sweetalert2";
+import Backdrop from "@mui/material/Backdrop";
+import Fade from "@mui/material/Fade";
+import Typography from "@mui/material/Typography";
 
 const Subadmin = () => {
+  //?InitialValues Defines
   const initialValues = {
     fullName: "",
     email: "",
@@ -497,6 +500,37 @@ const Subadmin = () => {
     area: "",
   };
 
+  //?Usestate Defines
+  const [show, setShow] = useState(false);
+  const [Subadminuserbyid, SetSubadminuserbyid] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [ShowSubadminData, setShowSubadminData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [SubAdmincurrentObject, SetAdmincurrentObject] =
+    useState(initialValues);
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleClose = () => {
+    setShow(false);
+    SetAdmincurrentObject(initialValues); // Reset form values on close
+  };
+  const handleShow = () => setShow(true);
+  const handleOpen = () => setOpen(true);
+  const handleband = () => setOpen(false);
+
+  let token = localStorage.getItem("token");
+  console.log("===================>", token);
+
+  const auth = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  //?Validation for All Fields
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email address")
@@ -517,20 +551,7 @@ const Subadmin = () => {
     area: Yup.string().required("Please enter your area"),
   });
 
-  const [show, setShow] = useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [ShowSubadminData, setShowSubadminData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const dispatch = useDispatch();
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  let token = localStorage.getItem("token");
-  console.log("===================>", token);
-
+  //?Styled the MUI Table
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: "#121621",
@@ -550,8 +571,19 @@ const Subadmin = () => {
     },
   }));
 
+  //?modal style for ViewData
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #DAA520",
+    boxShadow: 24,
+    p: 4,
+  };
 
-  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -569,17 +601,10 @@ const Subadmin = () => {
     setSearchQuery(e.target.value);
   };
 
-
   const paginatedData = filteredData.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
-
-  const auth = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
 
   useEffect(() => {
     AOS.init({
@@ -587,19 +612,15 @@ const Subadmin = () => {
     });
   }, []);
 
-
   // useEffect(() => {
   //   setShowSubadminData((prevData) =>
   //     prevData.filter((x) => x.role === "subadmin")
   //   );
   // }, [ShowSubadminData]);
 
-  console.log("showSubadmin============>", ShowSubadminData);
-
-  
-    useEffect(() => {
+  useEffect(() => {
     setIsLoading(true);
-    getAllAdminData(auth, setShowSubadminData, dispatch)
+    getAllAdminDataSubAdmin(auth, setShowSubadminData, dispatch)//reset the api
       .then(() => {
         setIsLoading(false);
       })
@@ -609,16 +630,84 @@ const Subadmin = () => {
       });
   }, [dispatch, token]);
 
-  const handleSubmit = (values, actions) => {
+  //?Old
+  // const handleSubmit = (values, actions) => {
+  //   console.log("values===========>", values);
+  //   actions.setSubmitting(false);
+  //   actions.resetForm();
+  //   CreateSubadminuser(values);
+  // };
+  //?new
+  // const handleSubmit = async (values, actions) => {
+  //   console.log("values===========>", values);
+  //   actions.setSubmitting(false);
+
+  //   if (values.user_id) {
+  //     // If user_id exists, update existing subadmin
+  //      await EditSubAdminUserData(values,actions);
+  //   } else {
+  //     CreateSubadminuser(values);
+  //     // Otherwise, create a new subadmin
+  //   }
+  //   actions.resetForm();
+  //   handleClose();
+  // };
+
+  //?Updated New
+  const handleSubmit = async (values, actions) => {
     console.log("values===========>", values);
     actions.setSubmitting(false);
+
+    if (values.user_id) {
+      await EditSubAdminUserData(values, actions);
+    } else {
+      CreateSubadminuser(values);
+    }
     actions.resetForm();
-    CreateSubadminuser(values);
+    SetAdmincurrentObject(initialValues);
+    handleClose();
   };
 
-  
+  //?Old Function
+  // const CreateSubadminuser = async (values) => {
+  //   try {
+  //     let response = await axios.post(
+  //       "http://localhost:3000/api/admin/createAdmin",
+  //       values,
+  //       auth
+  //     );
+  //     console.log(response.data);
+  //     getAllAdminData(auth, setShowSubadminData, dispatch);
+  //     Swal.fire({
+  //       position: "center",
+  //       icon: "success",
+  //       title: "Your work has been saved",
+  //       showConfirmButton: false,
+  //       timer: 1500
+  //     });
+  //     handleClose();
+  //   } catch (error) {
+  //     console.log(error);
+  //     if (error.response && error.response.data && error.response.data.message) {
+  //       Swal.fire({
+  //         position: "center",
+  //         icon: "error",
+  //         title: "Oops...",
+  //         text: error.response.data.message
+  //       });
+  //     } else {
+  //       Swal.fire({
+  //         position: "center",
+  //         icon: "error",
+  //         title: "Oops...",
+  //         text: "Something went wrong! Unable to create subadmin user."
+  //       });
+  //     }
+  //   }
+  // };
+
+  //? New Udated Code
   //? CREATE FUNCTION
-  
   const CreateSubadminuser = async (values) => {
     try {
       let response = await axios.post(
@@ -627,55 +716,58 @@ const Subadmin = () => {
         auth
       );
       console.log(response.data);
-      getAllAdminData(auth, setShowSubadminData, dispatch);
+      await getAllAdminDataSubAdmin(auth, setShowSubadminData, dispatch); // Wait for data update
       Swal.fire({
         position: "center",
         icon: "success",
         title: "Your work has been saved",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
-      handleClose();
+      handleClose(); // Close modal after success
     } catch (error) {
       console.log(error);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         Swal.fire({
           position: "center",
           icon: "error",
           title: "Oops...",
-          text: error.response.data.message
+          text: error.response.data.message,
         });
       } else {
         Swal.fire({
           position: "center",
           icon: "error",
           title: "Oops...",
-          text: "Something went wrong! Unable to create subadmin user."
+          text: "Something went wrong! Unable to create subadmin user.",
         });
       }
     }
   };
 
   // ? DELETE FUNCTION
-
   const DeleteSubadminUser = async (id) => {
     try {
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success",
-          cancelButton: "btn btn-danger"
+          cancelButton: "btn btn-danger",
         },
-        buttonsStyling: false
+        buttonsStyling: false,
       });
-  
+
       const result = await swalWithBootstrapButtons.fire({
         title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        text: "You won't Delete this Data!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, delete it!",
         cancelButtonText: "No, cancel!",
-        reverseButtons: true
+        reverseButtons: true,
       });
       if (result.isConfirmed) {
         let response = await axios.delete(
@@ -683,17 +775,17 @@ const Subadmin = () => {
           auth
         );
         console.log(response.data);
-        getAllAdminData(auth, setShowSubadminData, dispatch);
+        getAllAdminDataSubAdmin(auth, setShowSubadminData, dispatch); // Wait for data update
         Swal.fire({
           title: "Deleted!",
           text: "Your subadmin user has been deleted.",
-          icon: "success"
+          icon: "success",
         });
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire({
           title: "Cancelled",
           text: "Your subadmin user is safe :)",
-          icon: "error"
+          icon: "error",
         });
       }
     } catch (error) {
@@ -701,12 +793,46 @@ const Subadmin = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Something went wrong! Unable to delete subadmin user."
+        text: "Something went wrong! Unable to delete subadmin user.",
       });
     }
   };
-  
- 
+
+  //? View SubAdmin Data Function
+  const ViewSubAdminuserdata = async (id) => {
+    console.log(id);
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/admin/getuser/${id}`,
+        auth
+      );
+      console.log(response.data);
+      SetSubadminuserbyid(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+    handleOpen();
+  };
+
+  //? Edit SubAdmin Data
+  const EditSubAdminUserData = async (obj) => {
+    console.log("obj=========>", obj);
+    console.log("id==========>", obj.user_id);
+    try {
+      let response = await axios.put(
+        `http://localhost:3000/api/admin/UpdateSubAdmin/${obj.user_id}`,
+        obj,
+        auth
+      );
+      console.log(response.data);
+      await getAllAdminDataSubAdmin(auth, setShowSubadminData, dispatch); // Wait for data update
+      SetAdmincurrentObject({});
+    } catch (error) {
+      console.log(error);
+    }
+    SetAdmincurrentObject(obj);
+  };
+
   return (
     <>
       {isLoading ? (
@@ -786,8 +912,7 @@ const Subadmin = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedData
-                  .filter((data) => data.role === "subadmin")
+                {paginatedData.filter((data) => data.role === "subadmin")
                   .map((data, i) => (
                     <StyledTableRow key={i}>
                       <StyledTableCell align="center">
@@ -816,25 +941,38 @@ const Subadmin = () => {
                           className="text-primary me-1"
                           style={{ cursor: "pointer" }}
                         /> */}
-                        <img src={editicon} alt="" height={25} width={25} style={{cursor:'pointer'}} />
-                        {/* <VisibilityIcon
-                          className="ms-1"
+                        <img
+                          src={editicon}
+                          alt=""
+                          height={25}
+                          width={25}
+                          onClick={() => {
+                            EditSubAdminUserData(data);
+                            handleShow();
+                          }}
                           style={{ cursor: "pointer" }}
-                        /> */}
+                        />
+
                         <img
                           src={deleteicon}
                           alt=""
                           height={25}
                           width={25}
-                          onClick={()=>DeleteSubadminUser(data.user_id)}
-                          style={{ cursor: "pointer", color: "red",marginLeft:'1px' }}
+                          onClick={() => DeleteSubadminUser(data.user_id)}
+                          style={{
+                            cursor: "pointer",
+                            color: "red",
+                            marginLeft: "1px",
+                          }}
                         />
-                        <img src={viewicon}
-                         alt=""
-                         height={27}
-                         width={27}
-                         style={{cursor:'pointer',marginLeft:'1px'}}
-                          />
+                        <img
+                          src={viewicon}
+                          alt=""
+                          height={27}
+                          width={27}
+                          onClick={() => ViewSubAdminuserdata(data.user_id)}
+                          style={{ cursor: "pointer", marginLeft: "1px" }}
+                        />
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}
@@ -860,9 +998,10 @@ const Subadmin = () => {
         <Modal.Body>
           <Container>
             <Formik
-              initialValues={initialValues}
+              initialValues={SubAdmincurrentObject}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
+              enableReinitialize
             >
               {({ errors, touched }) => (
                 <Form>
@@ -990,7 +1129,7 @@ const Subadmin = () => {
                       Close
                     </Button>
                     <Button variant="primary" type="submit">
-                      Submit
+                      {SubAdmincurrentObject.user_id ? "Update" : "Add User"}
                     </Button>
                   </Box>
                 </Form>
@@ -999,6 +1138,60 @@ const Subadmin = () => {
           </Container>
         </Modal.Body>
       </Modal>
+
+      <MuiModal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleband}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              Subadmin User
+            </Typography>
+            <div className="d-flex justify-content-evenly px-2 py-2 main-container mt-3">
+              <div className="">
+                <div className="mb-3 fs-6">
+                  <strong>ID:</strong>
+                </div>
+                <div className="mb-3 fs-6">
+                  <strong>Full Name:</strong>
+                </div>
+                <div className="mb-3 fs-6">
+                  <strong>Email:</strong>
+                </div>
+                <div className="mb-3 fs-6">
+                  <strong>Phone:</strong>
+                </div>
+                <div className="mb-3 fs-6">
+                  <strong>Gender:</strong>
+                </div>
+                <div className="mb-3 fs-6">
+                  <strong>Area:</strong>
+                </div>
+                <div className="mb-3 fs-6">
+                  <strong>Role:</strong>
+                </div>
+              </div>
+              <div className="">
+                <div className="mb-3 fs-6">{Subadminuserbyid?.user_id}</div>
+                <div className="mb-3 fs-6">{Subadminuserbyid?.fullName}</div>
+                <div className="mb-3 fs-6">{Subadminuserbyid?.email}</div>
+                <div className="mb-3 fs-6">{Subadminuserbyid?.phone}</div>
+                <div className="mb-3 fs-6">{Subadminuserbyid?.gender}</div>
+                <div className="mb-3 fs-6">{Subadminuserbyid?.area}</div>
+                <div className="mb-3 fs-6">{Subadminuserbyid?.role}</div>
+              </div>
+            </div>
+          </Box>
+        </Fade>
+      </MuiModal>
     </>
   );
 };

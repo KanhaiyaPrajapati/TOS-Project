@@ -284,6 +284,22 @@ min-height: 20px !important;
   padding: 2px 5px 3px !important; 
 }
 
+
+div:where(.swal2-container) div:where(.swal2-actions){
+  gap: 15px !important;
+}
+
+.css-1oc0wiq-MuiTableCell-root.MuiTableCell-head{
+  background-color: #fff !important;
+  color: black !important;
+}
+
+span{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 //! Accordian Active state and pages Ends here
 
 
@@ -686,10 +702,7 @@ button {
   background-color: #fff !important;
   color: black !important;
 }
-.css-1oc0wiq-MuiTableCell-root.MuiTableCell-head{
-  background-color: whitesmoke !important;
-  color: black !important;
-}
+
 
 //! Modal Animation Sass
 .modal-enter {
