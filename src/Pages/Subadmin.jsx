@@ -720,7 +720,7 @@ const Subadmin = () => {
       Swal.fire({
         position: "center",
         icon: "success",
-        title: "Your work has been saved",
+        title: "SubAdmin created successfully!",
         showConfirmButton: false,
         timer: 1500,
       });
@@ -750,7 +750,7 @@ const Subadmin = () => {
   };
 
   // ? DELETE FUNCTION
-  const DeleteSubadminUser = async (id) => {
+    const DeleteSubadminUser = async (id) => {
     try {
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -1129,7 +1129,8 @@ const Subadmin = () => {
                       Close
                     </Button>
                     <Button variant="primary" type="submit">
-                      {SubAdmincurrentObject.user_id ? "Update" : "Add User"}
+                      {/* {SubAdmincurrentObject.user_id ? "Update" : "Add User"} */}
+                      Add User
                     </Button>
                   </Box>
                 </Form>

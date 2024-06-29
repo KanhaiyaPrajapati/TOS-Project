@@ -42,7 +42,7 @@ export const getAllAdminData = async (auth, setshowdata,dispatch) => {
       console.log('Reporteruser=========>',Reporteruser);
       setShowReporterData(Reporteruser)
       dispatch(getReporterdata(Reporteruser))
-      } catch (error) {
+      }catch (error){
       console.log(error);
     }
   }
