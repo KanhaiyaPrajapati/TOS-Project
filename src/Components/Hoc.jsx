@@ -552,7 +552,7 @@ export const Hoc = (Component) => {
                 <NavLink to="/dashboard">
                   <span>
                       <DashboardIcon/>
-                    Dashboard
+                      <span className="fs-6" style={{marginTop:'3px'}}>Dashboard</span>
                   </span>
                 </NavLink>
               </div>
@@ -579,7 +579,7 @@ export const Hoc = (Component) => {
                     id="panel1-header"
                   >
                     <AccountCircleIcon />
-                    Users
+                    <span className="fs-6" style={{marginTop:'3px'}}>Users</span>
                   </AccordionSummary>
                   <AccordionDetails
                     style={{
@@ -618,7 +618,7 @@ export const Hoc = (Component) => {
                 <NavLink to="/newsfeed">
                   <span>
                     <FeedIcon />
-                    NewsFeed
+                    <span className="fs-6" style={{marginTop:'4px'}}>NewsFeed</span>
                   </span>
                 </NavLink>
               </div>

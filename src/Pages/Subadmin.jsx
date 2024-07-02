@@ -463,6 +463,7 @@ import {
   TableRow,
   styled,
   Modal as MuiModal,
+  Tooltip,
 } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -479,7 +480,7 @@ import { HashLoader } from "react-spinners";
 import "aos/dist/aos.css";
 import AOS from "aos";
 import axios from "axios";
-import deleteicon from "../Images/deleticon8.png";
+import deleteicon from "../Images/icons8-delete-24.png";
 import editicon from "../Images/icons8-edit-64.png";
 import viewicon from "../Images/icons8-view-64.png";
 import Swal from "sweetalert2";
@@ -912,8 +913,7 @@ const Subadmin = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedData.filter((data) => data.role === "subadmin")
-                  .map((data, i) => (
+                {paginatedData.map((data, i) => (
                     <StyledTableRow key={i}>
                       <StyledTableCell align="center">
                         {data.user_id}
@@ -941,23 +941,27 @@ const Subadmin = () => {
                           className="text-primary me-1"
                           style={{ cursor: "pointer" }}
                         /> */}
+                        <Tooltip title='Edit'>
                         <img
                           src={editicon}
                           alt=""
-                          height={25}
-                          width={25}
+                          height={23}
+                          width={23}
+                          className="img-fluid"
                           onClick={() => {
                             EditSubAdminUserData(data);
                             handleShow();
                           }}
                           style={{ cursor: "pointer" }}
                         />
-
+                        </Tooltip>
+                          <Tooltip title='Delete'>
                         <img
                           src={deleteicon}
                           alt=""
-                          height={25}
-                          width={25}
+                          height={21}
+                          width={21}
+                          className="img-fluid"
                           onClick={() => DeleteSubadminUser(data.user_id)}
                           style={{
                             cursor: "pointer",
@@ -965,14 +969,18 @@ const Subadmin = () => {
                             marginLeft: "1px",
                           }}
                         />
+                        </Tooltip>
+                          <Tooltip title='View'>
                         <img
                           src={viewicon}
                           alt=""
-                          height={27}
-                          width={27}
+                          height={24}
+                          width={24}
+                          className="img-fluid"
                           onClick={() => ViewSubAdminuserdata(data.user_id)}
                           style={{ cursor: "pointer", marginLeft: "1px" }}
                         />
+                        </Tooltip>
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}

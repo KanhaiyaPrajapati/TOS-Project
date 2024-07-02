@@ -720,7 +720,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import { HashLoader } from "react-spinners";
 import { useDispatch } from "react-redux";
-import deleteicon from "../Images/deleticon8.png";
+import deleteicon from "../Images/icons8-delete-24.png";
 import editicon from "../Images/icons8-edit-64.png";
 import viewicon from "../Images/icons8-view-64.png";
 import "aos/dist/aos.css";
@@ -728,6 +728,7 @@ import AOS from "aos";
 import { getAllAdminReporterData } from "./api";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Tooltip from '@mui/material/Tooltip';
 
 const Reporter = () => {
   const initialValues = {
@@ -751,6 +752,8 @@ const Reporter = () => {
   const [ViewReporteruserdata, setViewReporteruserdata] = useState([]);
   const [ReportercurrentObject, setReportercurrentObject] =
     useState(initialValues);
+
+
   const handleOpen = () => setOpen(true);
   const handleband = () => setOpen(false);
   const [open, setOpen] = useState(false);
@@ -769,7 +772,7 @@ const Reporter = () => {
 
   const auth = {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,                  
     },
   };
 
@@ -830,17 +833,25 @@ const Reporter = () => {
 
   //? Update Handlesubmit function
   const handleSubmit = async (values, actions) => {
-    console.log("values===========>", values);
-    actions.setSubmitting(false);
-    if (values.user_id) {
-      await EditReporteruser(values);
-    } else {
-      CreateReporterUser(values);
+    actions.setSubmitting(false); // Ensure form submission is not in progress
+  
+    try {
+      if (isEditMode) {
+        await EditReporteruser(values);
+        alert('Reporter updated successfully!');
+      } else {
+        await CreateReporterUser(values);
+        alert('Reporter created successfully!');
+      }
+  
+      actions.resetForm(); // Reset form fields after successful submission
+      handleClose(); // Close modal after successful submission
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle error appropriately, e.g., show an error message to the user
     }
-
-    actions.resetForm();
-    handleClose();
   };
+  
 
   //?Filter the data Fullname Wise
   const filteredData = ShowReporterData.filter((data) =>
@@ -991,7 +1002,7 @@ const Reporter = () => {
     handleOpen();
   };
 
-  //?Upadte Function
+
   // const EditReporteruser = async (obj) => {
   //   try {
   //     let response = await axios.put(
@@ -1006,7 +1017,10 @@ const Reporter = () => {
   //     console.log(error.message);
   //   }
   // };
-
+    
+  
+  
+  //?Upadte Function
   const EditReporteruser = async (values) => {
     try {
       let response = await axios.put(
@@ -1115,10 +1129,7 @@ const Reporter = () => {
                           }}
                         />
                       </div>
-
                     </div>
-
-
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
@@ -1133,9 +1144,7 @@ const Reporter = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedData
-                  .filter((data) => data.role === "reporter")
-                  .map((data, i) => (
+                {paginatedData.map((data, i) => (
                     <StyledTableRow key={i}>
                       <StyledTableCell align="center">
                         {data.user_id}
@@ -1159,24 +1168,31 @@ const Reporter = () => {
                         {data.area}
                       </StyledTableCell>
                       <StyledTableCell align="center">
+                      <Tooltip title='Edit'>
                         <img
                           src={editicon}
+                          title="edit"
                           alt=""
-                          height={25}
-                          width={25}
+                          height={24}
+                          width={24}
+                           className="img-fluid"
                           onClick={() => {
                             setIsEditMode(true); // Set edit mode to true
                             setReportercurrentObject(data);
                             handleShow();
+                           
+
                           }}
                           style={{ cursor: "pointer" }}
                         />
-
-                        <img
+                        </Tooltip>
+                        <Tooltip title='Delete'>
+                         <img
                           src={deleteicon}
                           alt=""
-                          height={25}
-                          width={25}
+                          height={21}
+                          className="img-fluid"
+                          width={21}
                           onClick={() => DeleteReporterUser(data.user_id)}
                           style={{
                             cursor: "pointer",
@@ -1184,16 +1200,18 @@ const Reporter = () => {
                             marginLeft: "1px",
                           }}
                         />
-
-
-                        <img
+                        </Tooltip>
+                        <Tooltip title='View'>
+                          <img
                           src={viewicon}
                           alt=""
-                          height={27}
-                          width={27}
+                          height={24}
+                          width={24}
+                           className="img-fluid"
                           onClick={() => ViewReporterUser(data.user_id)}
                           style={{ cursor: "pointer", marginLeft: "1px" }}
                         />
+                        </Tooltip>
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}
@@ -1224,8 +1242,8 @@ const Reporter = () => {
             <Formik
               initialValues={ReportercurrentObject}
               validationSchema={validationSchema}
-              onSubmit={handleSubmit}
               enableReinitialize
+              onSubmit={handleSubmit}
             >
               {({ errors, touched }) => (
                 <Form>
@@ -1353,7 +1371,6 @@ const Reporter = () => {
                       Close
                     </Button>
                     <Button variant="primary" type="submit">
-                      {/* {ReportercurrentObject.user_id ? "Update User" : "Add User"} */}
                       {isEditMode ? "Update" : "Add"}
                     </Button>
                   </Box>
