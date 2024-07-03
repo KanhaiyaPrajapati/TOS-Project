@@ -15,6 +15,7 @@ const ResetPassWord = () => {
     password: "",
     confirmPassword: "",
   };
+
   const navigate = useNavigate();
   const validationSchema = Yup.object().shape({
     password: Yup.string().required("Password is required"),
@@ -26,11 +27,11 @@ const ResetPassWord = () => {
   const handleSubmit = (values, actions) => {
     console.log(values);
     actions.resetForm();
-    // navigate('/dashboard')
   };
+  
   return (
     <>
-        <Container className='px-3 py-3 resetpassword-wrapper border border-1'>
+      <Container className='resetpassword-wrapper px-4 py-4' sx={{width:{sm:"100%",md:"75%",lg:"50%"}}}>
         <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -40,7 +41,6 @@ const ResetPassWord = () => {
               <Form className="mx-auto rounded-3">
                 <h4 className="mt-2"> <VpnKeyRoundedIcon style={{fontSize:'25px'}}/> Security</h4>
                 <hr />
-                {/* <h5 className="text-center mt-2">Hi,Welcome Back</h5> */}
                 <div className="mt-4 px-2">
                   <Field
                     as={TextField}
@@ -48,7 +48,7 @@ const ResetPassWord = () => {
                     label="Old Password"
                     variant="outlined"
                     className="form-control"
-                     type="password"
+                    type="password"
                     error={touched.password && !!errors.password}
                     helperText={touched.password && errors.password}
                   />
@@ -65,14 +65,12 @@ const ResetPassWord = () => {
                     helperText={touched.confirmPassword && errors.confirmPassword}
                   />
                 </div>
-
                 <Box className="text-center mt-4 mb-3 pt-2">
                   <button type="submit" className="btn btn-primary">
                    Save Changes
                   </button>
                 </Box>
-                
-                </Form>
+              </Form>
             )}
           </Formik>
         </Container>
@@ -80,4 +78,4 @@ const ResetPassWord = () => {
   )
 }
 
-export default Hoc(ResetPassWord)
+export default ResetPassWord;

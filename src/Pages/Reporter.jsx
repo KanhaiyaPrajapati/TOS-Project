@@ -752,12 +752,32 @@ const Reporter = () => {
   const [ViewReporteruserdata, setViewReporteruserdata] = useState([]);
   const [ReportercurrentObject, setReportercurrentObject] =
     useState(initialValues);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+
+
+    const [currentReporter, setCurrentReporter] = useState(null);
 
 
   const handleOpen = () => setOpen(true);
   const handleband = () => setOpen(false);
   const [open, setOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false); // New state for edit mode
+
+
+    const handleShowAddModal = () => setShowAddModal(true);
+    const handleCloseAddModal = () => setShowAddModal(false);
+
+
+    const handleShowEditModal = (reporter) => {
+          setCurrentReporter(reporter);
+          setShowEditModal(true);
+        };
+
+    const handleCloseEditModal = () => {
+     setCurrentReporter(null);
+     setShowEditModal(false);
+  };
 
   const handleClose = () => {
     setShow(false);
@@ -798,6 +818,11 @@ const Reporter = () => {
     area: Yup.string().required("Please enter your area"),
   });
 
+  const validationSchemaEdit = Yup.object().shape({
+    area: Yup.string().required("Please enter your area"),
+  });
+
+
   //? Styled in Tabel
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -833,24 +858,15 @@ const Reporter = () => {
 
   //? Update Handlesubmit function
   const handleSubmit = async (values, actions) => {
-    actions.setSubmitting(false); // Ensure form submission is not in progress
-  
-    try {
-      if (isEditMode) {
-        await EditReporteruser(values);
-        alert('Reporter updated successfully!');
-      } else {
-        await CreateReporterUser(values);
-        alert('Reporter created successfully!');
-      }
-  
-      actions.resetForm(); // Reset form fields after successful submission
-      handleClose(); // Close modal after successful submission
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle error appropriately, e.g., show an error message to the user
-    }
-  };
+        if (currentReporter) {
+          await EditReporteruser(values);
+        } else {
+          await CreateReporterUser(values);
+        }
+        actions.resetForm();
+        handleCloseAddModal();
+        handleCloseEditModal();
+      };
   
 
   //?Filter the data Fullname Wise
@@ -996,36 +1012,25 @@ const Reporter = () => {
       );
       console.log(response.data);
       setViewReporteruserdata(response.data);
+      handleOpen();
     } catch (error) {
       console.log(error);
+      Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong! Unable to fetch Reporter user details.",
+        });
     }
-    handleOpen();
+   
   };
 
 
-  // const EditReporteruser = async (obj) => {
-  //   try {
-  //     let response = await axios.put(
-  //       `http://localhost:3000/api/admin/UpdateReporter/${obj.user_id}`,
-  //       obj,
-  //       auth
-  //     );
-  //     console.log(response.data);
-  //     setReportercurrentObject(obj);
-  //     await getAllAdminReporterData(auth, setShowReporterData, dispatch);
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // };
-    
-  
-  
   //?Upadte Function
-  const EditReporteruser = async (values) => {
+  const EditReporteruser = async (reporter) => {
     try {
       let response = await axios.put(
-        `http://localhost:3000/api/admin/UpdateReporter/${values.user_id}`,
-        values,
+        `http://localhost:3000/api/admin/UpdateReporter/${currentReporter.user_id}`,
+        reporter,
         auth
       );
       console.log(response.data);
@@ -1037,7 +1042,7 @@ const Reporter = () => {
         showConfirmButton: false,
         timer: 1500,
       });
-      handleClose();
+      // handleClose();
     } catch (error) {
       console.log(error);
       if (
@@ -1088,11 +1093,7 @@ const Reporter = () => {
                       <div>
                         <button
                           className="btn btn-outline-secondary"
-                          onClick={() => {
-                            setIsEditMode(false); // Set edit mode to false
-                            setReportercurrentObject(initialValues); // Reset form values
-                            handleShow();
-                          }}
+                          onClick= {handleShowAddModal}
                         >
                           <AddIcon style={{ fontSize: "18px" }} />
                           Add Reporter
@@ -1144,28 +1145,28 @@ const Reporter = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedData.map((data, i) => (
+                {paginatedData.map((reporter, i) => (
                     <StyledTableRow key={i}>
                       <StyledTableCell align="center">
-                        {data.user_id}
+                        {reporter.user_id}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {data.fullName}
+                        {reporter.fullName}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {data.email}
+                        {reporter.email}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {data.phone}
+                        {reporter.phone}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {data.gender}
+                        {reporter.gender}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {data.role}
+                        {reporter.role}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {data.area}
+                        {reporter.area}
                       </StyledTableCell>
                       <StyledTableCell align="center">
                       <Tooltip title='Edit'>
@@ -1176,13 +1177,7 @@ const Reporter = () => {
                           height={24}
                           width={24}
                            className="img-fluid"
-                          onClick={() => {
-                            setIsEditMode(true); // Set edit mode to true
-                            setReportercurrentObject(data);
-                            handleShow();
-                           
-
-                          }}
+                          onClick={()=>handleShowEditModal(reporter)}
                           style={{ cursor: "pointer" }}
                         />
                         </Tooltip>
@@ -1193,7 +1188,7 @@ const Reporter = () => {
                           height={21}
                           className="img-fluid"
                           width={21}
-                          onClick={() => DeleteReporterUser(data.user_id)}
+                          onClick={() => DeleteReporterUser(reporter.user_id)}
                           style={{
                             cursor: "pointer",
                             color: "red",
@@ -1208,7 +1203,7 @@ const Reporter = () => {
                           height={24}
                           width={24}
                            className="img-fluid"
-                          onClick={() => ViewReporterUser(data.user_id)}
+                          onClick={() => ViewReporterUser(reporter.user_id)}
                           style={{ cursor: "pointer", marginLeft: "1px" }}
                         />
                         </Tooltip>
@@ -1230,11 +1225,11 @@ const Reporter = () => {
         </div>
       )}
 
-      {/* Modal Starts Here */}
-      <Modal show={show} onHide={handleClose} centered>
+      {/*ADD  Modal Starts Here */}
+      <Modal show={showAddModal} onHide={handleCloseAddModal} centered>
         <Modal.Header closeButton>
           <Typography id="modal-title" variant="h6" component="h2">
-            {isEditMode ? "Edit Reporter" : "Add Reporter"}
+            ADD Reporter
           </Typography>
         </Modal.Header>
         <Modal.Body>
@@ -1242,12 +1237,11 @@ const Reporter = () => {
             <Formik
               initialValues={ReportercurrentObject}
               validationSchema={validationSchema}
-              enableReinitialize
               onSubmit={handleSubmit}
             >
-              {({ errors, touched }) => (
+              {({isSubmitting }) => (
                 <Form>
-                  {!isEditMode && (
+                
                     <>
                       <Box sx={{ marginBottom: "15px" }}>
                         <Field
@@ -1256,9 +1250,10 @@ const Reporter = () => {
                           label="Full Name"
                           variant="outlined"
                           fullWidth
-                          error={touched.fullName && !!errors.fullName}
-                          helperText={touched.fullName && errors.fullName}
+                          // error={touched.fullName && !!errors.fullName}
+                          // helperText={touched.fullName && errors.fullName}
                         />
+                          <ErrorMessage name="fullName" component="div"   className="error-message"/>
                       </Box>
                       <Box sx={{ marginBottom: "15px" }}>
                         <Field
@@ -1267,9 +1262,10 @@ const Reporter = () => {
                           label="Email Address"
                           variant="outlined"
                           fullWidth
-                          error={touched.email && !!errors.email}
-                          helperText={touched.email && errors.email}
+                          // error={touched.email && !!errors.email}
+                          // helperText={touched.email && errors.email}
                         />
+                         <ErrorMessage name="email" component="div" className="error-message" />
                       </Box>
                       <Box sx={{ marginBottom: "15px" }}>
                         <Field
@@ -1279,9 +1275,10 @@ const Reporter = () => {
                           type="password"
                           variant="outlined"
                           fullWidth
-                          error={touched.password && !!errors.password}
-                          helperText={touched.password && errors.password}
+                          // error={touched.password && !!errors.password}
+                          // helperText={touched.password && errors.password}
                         />
+                        <ErrorMessage name="password" component="div"  className="error-message" />
                       </Box>
                       <Box sx={{ marginBottom: "15px" }}>
                         <Field
@@ -1291,14 +1288,16 @@ const Reporter = () => {
                           type="password"
                           variant="outlined"
                           fullWidth
-                          error={
-                            touched.confirmPassword && !!errors.confirmPassword
-                          }
-                          helperText={
-                            touched.confirmPassword && errors.confirmPassword
-                          }
+                          // error={
+                          //   touched.confirmPassword && !!errors.confirmPassword
+                          // }
+                          // helperText={
+                          //   touched.confirmPassword && errors.confirmPassword
+                          // }
                         />
+                        <ErrorMessage name="confirmPassword" component="div"  className="error-message" />
                       </Box>
+
                       <Box sx={{ marginBottom: "15px" }}>
                         <FormControl component="fieldset">
                           <RadioGroup aria-label="gender" name="gender" row>
@@ -1328,9 +1327,10 @@ const Reporter = () => {
                           label="Phone"
                           variant="outlined"
                           fullWidth
-                          error={touched.phone && !!errors.phone}
-                          helperText={touched.phone && errors.phone}
+                          // error={touched.phone && !!errors.phone}
+                          // helperText={touched.phone && errors.phone}
                         />
+                          <ErrorMessage name="phone" component="div"  className="error-message" />
                       </Box>
                       <Box sx={{ marginBottom: "15px" }}>
                     <Field
@@ -1350,8 +1350,56 @@ const Reporter = () => {
                     />
                   </Box>
                     </>
-                  )}
+                
                   <Box sx={{ marginBottom: "15px" }}>
+                    <Field
+                      as={TextField}
+                      name="area"
+                      label="Area"
+                      variant="outlined"
+                      fullWidth
+                      // error={touched.area && !!errors.area}
+                      // helperText={touched.area && errors.area}
+                    />
+                      <ErrorMessage name="area" component="div"   className="error-message"/>
+                  </Box>
+                  <Box mt={2} display="flex" justifyContent="end">
+                    <Button
+                      variant="secondary"
+                      onClick={handleClose}
+                      className="me-2"
+                    >
+                      Close
+                    </Button>
+                    <Button variant="primary" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Submitting..." : "Add Reporter"}
+                    </Button>
+                  </Box>
+                </Form>
+              )}
+            </Formik>
+          </Container>
+        </Modal.Body>
+      </Modal>
+
+      {/* Edit Modal Is Starts HERE */}
+      <Modal show={showEditModal} onHide={handleCloseEditModal} centered>
+        <Modal.Header closeButton>
+          <Typography id="modal-title" variant="h6" component="h2">
+          Edit Reporter
+          </Typography>
+        </Modal.Header>
+        <Modal.Body>
+          <Container>
+            <Formik
+              initialValues={currentReporter || initialValues}
+              validationSchema={validationSchemaEdit}
+              onSubmit={handleSubmit}
+              enableReinitialize
+            >
+              {({ errors, touched,isSubmitting }) => (
+                <Form>
+                    <Box sx={{ marginBottom: "15px" }}>
                     <Field
                       as={TextField}
                       name="area"
@@ -1362,16 +1410,17 @@ const Reporter = () => {
                       helperText={touched.area && errors.area}
                     />
                   </Box>
+              
                   <Box mt={2} display="flex" justifyContent="end">
                     <Button
                       variant="secondary"
-                      onClick={handleClose}
+                      onClick={handleCloseEditModal}
                       className="me-2"
                     >
                       Close
                     </Button>
-                    <Button variant="primary" type="submit">
-                      {isEditMode ? "Update" : "Add"}
+                    <Button variant="primary" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Submitting..." : "Update Reporter"}
                     </Button>
                   </Box>
                 </Form>
@@ -1380,7 +1429,9 @@ const Reporter = () => {
           </Container>
         </Modal.Body>
       </Modal>
+      {/* Edit MODal Ends HERE */}
 
+              
       {/* View Modal Starts Here */}
       <MuiModal
         aria-labelledby="transition-modal-title"
@@ -1441,3 +1492,690 @@ const Reporter = () => {
   );
 };
 export default Hoc(Reporter);
+
+
+//!================================================= Create Two Form and 3 modal ==================================================
+
+// import React, { useEffect, useState } from "react";
+// import * as Yup from "yup";
+// import { Hoc } from "../Components/Hoc";
+// import AddIcon from "@mui/icons-material/Add";
+// import Modal from "react-bootstrap/Modal";
+// import Button from "react-bootstrap/Button";
+// import {
+//   Box,
+//   Container,
+//   FormControl,
+//   FormControlLabel,
+//   Paper,
+//   Radio,
+//   RadioGroup,
+//   Table,
+//   TablePagination,
+//   TableRow,
+//   TextField,
+//   Typography,
+//   styled,
+//   Modal as MuiModal,
+//   Backdrop,
+//   Fade,
+// } from "@mui/material";
+// import { ErrorMessage, Field, Form, Formik } from "formik";
+// import TableBody from "@mui/material/TableBody";
+// import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+// import TableContainer from "@mui/material/TableContainer";
+// import TableHead from "@mui/material/TableHead";
+// import { HashLoader } from "react-spinners";
+// import { useDispatch } from "react-redux";
+// import deleteicon from "../Images/icons8-delete-24.png";
+// import editicon from "../Images/icons8-edit-64.png";
+// import viewicon from "../Images/icons8-view-64.png";
+// import "aos/dist/aos.css";
+// import AOS from "aos";
+// import { getAllAdminReporterData } from "./api";
+// import axios from "axios";
+// import Swal from "sweetalert2";
+// import Tooltip from '@mui/material/Tooltip';
+
+// const Reporter = () => {
+//   const initialValues = {
+//     fullName: "",
+//     email: "",
+//     password: "",
+//     confirmPassword: "",
+//     phone: "",
+//     gender: "",
+//     role: "",
+//     area: "",
+//   };
+
+//   const [showAddModal, setShowAddModal] = useState(false);
+//   const [showEditModal, setShowEditModal] = useState(false);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [page, setPage] = useState(0);
+//   const [rowsPerPage, setRowsPerPage] = useState(5);
+//   const [ShowReporterData, setShowReporterData] = useState([]);
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [ViewReporteruserdata, setViewReporteruserdata] = useState([]);
+//   const [currentReporter, setCurrentReporter] = useState(null);
+//   const [open, setOpen] = useState(false);
+
+//   const handleOpen = () => setOpen(true);
+//   const handleband = () => setOpen(false);
+
+//   const handleShowAddModal = () => setShowAddModal(true);
+//   const handleCloseAddModal = () => setShowAddModal(false);
+
+//   const handleShowEditModal = (reporter) => {
+//     setCurrentReporter(reporter);
+//     setShowEditModal(true);
+
+//   };
+//   const handleCloseEditModal = () => setShowEditModal(false);
+
+//   const dispatch = useDispatch();
+
+//   let token = localStorage.getItem("token");
+//   console.log("===================>", token);
+
+//   const auth = {
+//     headers: {
+//       Authorization: `Bearer ${token}`,                  
+//     },
+//   };
+
+//   const validationSchema = Yup.object().shape({
+//     email: Yup.string()
+//       .email("Invalid email address")
+//       .required("Email is required"),
+//     fullName: Yup.string().required("Please Enter the Name"),
+//     password: Yup.string().required("Password is required"),
+//     confirmPassword: Yup.string()
+//       .required("Confirm Password is required")
+//       .oneOf([Yup.ref("password"), null], "Passwords must match"),
+//     phone: Yup.string()
+//       .required("Please Enter the phone number")
+//       .matches(
+//         /^(\+?\d{1,4}[\s-])?(\(?\d{3}\)?[\s-]?)?[\d\s-]{7,10}$/,
+//         "Phone number is not valid"
+//       ),
+//     gender: Yup.string().required("Please select your gender"),
+//     role: Yup.string().required("Please select your role"),
+//     area: Yup.string().required("Please enter your area"),
+//   });
+
+//   const validationSchemaEdit = Yup.object().shape({
+//     area: Yup.string().required("Please enter your area"),
+//   });
+
+//   const StyledTableCell = styled(TableCell)(({ theme }) => ({
+//     [`&.${tableCellClasses.head}`]: {
+//       backgroundColor: "#121621",
+//       color: theme.palette.common.white,
+//     },
+//     [`&.${tableCellClasses.body}`]: {
+//       fontSize: 14,
+//     },
+//   }));
+
+//   const StyledTableRow = styled(TableRow)(({ theme }) => ({
+//     "&:nth-of-type(odd)": {
+//       backgroundColor: theme.palette.action.hover,
+//     },
+//     "&:last-child td, &:last-child th": {
+//       border: 0,
+//     },
+//   }));
+
+//   const style = {
+//     position: "absolute",
+//     top: "50%",
+//     left: "50%",
+//     transform: "translate(-50%, -50%)",
+//     width: 400,
+//     bgcolor: "background.paper",
+//     border: "2px solid #DAA520",
+//     boxShadow: 24,
+//     p: 4,
+//   };
+
+//   const handleSubmit = (values, actions) =>{
+//      console.log('Values',values);
+//      CreateReporterUser(values)
+//      EditReporteruser(values)
+//      actions.resetForm(); // Reset form fields after successful submission
+//      handleCloseAddModal();
+//      handleCloseEditModal();
+//   }
+
+//   const filteredData = ShowReporterData.filter((data) =>
+//     data.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+//   );
+
+//   useEffect(() => {
+//     setIsLoading(true);
+//     getAllAdminReporterData(auth, setShowReporterData, dispatch) //reset the api
+//       .then(() => {
+//         setIsLoading(false);
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching data:", error);
+//         setIsLoading(false);
+//       });
+//   }, [dispatch, token]);
+
+//   useEffect(() => {
+//     AOS.init({
+//       duration: 1500,
+//     });
+//   }, []);
+
+//   const handleSearch = (e) => {
+//     setSearchQuery(e.target.value);
+//   };
+
+//   const paginatedData = filteredData.slice(
+//     page * rowsPerPage,
+//     page * rowsPerPage + rowsPerPage
+//   );
+
+//   const handleChangePage = (event, newPage) => {
+//     setPage(newPage);
+//   };
+
+//   const handleChangeRowsPerPage = (event) => {
+//     setRowsPerPage(parseInt(event.target.value, 10));
+//     setPage(0);
+//   };
+
+//   const CreateReporterUser = async (obj) => {
+//     try {
+//       let response = await axios.post(
+//         "http://localhost:3000/api/admin/createReporter",
+//         obj,
+//         auth
+//       );
+//       console.log(response.data);
+//       await getAllAdminReporterData(auth, setShowReporterData, dispatch); // Wait for data update
+//       Swal.fire({
+//         position: "center",
+//         icon: "success",
+//         title: "Reporter created successfully!",
+//         showConfirmButton: false,
+//         timer: 1500,
+//       });
+//       handleCloseAddModal(); // Close modal after success
+//     } catch (error) {
+//       console.log(error);
+//       if (
+//         error.response &&
+//         error.response.data &&
+//         error.response.data.message
+//       ) {
+//         Swal.fire({
+//           position: "center",
+//           icon: "error",
+//           title: "Oops...",
+//           text: error.response.data.message,
+//         });
+//       } else {
+//         Swal.fire({
+//           position: "center",
+//           icon: "error",
+//           title: "Oops...",
+//           text: "Something went wrong! Unable to create subadmin user.",
+//         });
+//       }
+//     }
+//   };
+
+//   const DeleteReporterUser = async (id) => {
+//     try {
+//       const swalWithBootstrapButtons = Swal.mixin({
+//         customClass: {
+//           confirmButton: "btn btn-success",
+//           cancelButton: "btn btn-danger",
+//         },
+//         buttonsStyling: false,
+//       });
+
+//       const result = await swalWithBootstrapButtons.fire({
+//         title: "Are you sure?",
+//         text: "You won't Delete this Data!",
+//         icon: "warning",
+//         showCancelButton: true,
+//         confirmButtonText: "Yes, delete it!",
+//         cancelButtonText: "No, cancel!",
+//         reverseButtons: true,
+//       });
+//       if (result.isConfirmed) {
+//         let response = await axios.delete(
+//           `http://localhost:3000/api/admin/deleteSubAdminAndReporter/${id}`,
+//           auth
+//         );
+//         console.log(response.data);
+//         await getAllAdminReporterData(auth, setShowReporterData, dispatch);
+//         Swal.fire({
+//           title: "Deleted!",
+//           text: "Your Reporter user has been deleted.",
+//           icon: "success",
+//         });
+//       } else if (result.dismiss === Swal.DismissReason.cancel) {
+//         Swal.fire({
+//           title: "Cancelled",
+//           text: "Your Reporter user is safe :)",
+//           icon: "error",
+//         });
+//       }
+//     } catch (error) {
+//       console.log(error);
+//       Swal.fire({
+//         icon: "error",
+//         title: "Oops...",
+//         text: "Something went wrong! Unable to delete Reporter user.",
+//       });
+//     }
+//   };
+
+//   const ViewReporterUser = async (id) => {
+//     try {
+//       const response = await axios.get(
+//         `http://localhost:3000/api/admin/getuser/${id}`,
+//         auth
+//       );
+//       console.log(response.data);
+//       setViewReporteruserdata(response.data);
+//       handleOpen();
+//     } catch (error) {
+//       console.log(error);
+//       Swal.fire({
+//         icon: "error",
+//         title: "Oops...",
+//         text: "Something went wrong! Unable to fetch Reporter user details.",
+//       });
+//     }
+//   };
+
+//   // const EditReporterData = async (id, updatedData) => {
+//   //   try {
+//   //     let response = await axios.patch(
+//   //       `http://localhost:3000/api/admin/editSubAdminAndReporter/${id}`,
+//   //       updatedData,
+//   //       auth
+//   //     );
+//   //     console.log(response.data);
+//   //     await getAllAdminReporterData(auth, setShowReporterData, dispatch); // Wait for data update
+//   //     Swal.fire({
+//   //       position: "center",
+//   //       icon: "success",
+//   //       title: "Reporter updated successfully!",
+//   //       showConfirmButton: false,
+//   //       timer: 1500,
+//   //     });
+//   //     handleCloseEditModal(); // Close modal after success
+//   //   } catch (error) {
+//   //     console.log(error);
+//   //     if (
+//   //       error.response &&
+//   //       error.response.data &&
+//   //       error.response.data.message
+//   //     ) {
+//   //       Swal.fire({
+//   //         position: "center",
+//   //         icon: "error",
+//   //         title: "Oops...",
+//   //         text: error.response.data.message,
+//   //       });
+//   //     } else {
+//   //       Swal.fire({
+//   //         position: "center",
+//   //         icon: "error",
+//   //         title: "Oops...",
+//   //         text: "Something went wrong! Unable to update reporter data.",
+//   //       });
+//   //     }
+//   //   }
+//   // };
+
+//   const EditReporteruser = async (reporter) => {
+//     // console.log('edited object is:',reporter.reporter._id);
+//     try {
+//       let response = await axios.put(
+//         `http://localhost:3000/api/admin/UpdateReporter/${reporter.user_id}`, reporter,auth
+//       );
+//       console.log(response.data);
+//       await getAllAdminReporterData(auth, setShowReporterData, dispatch); // Wait for data update
+//       Swal.fire({
+//         position: "center",
+//         icon: "success",
+//         title: "Reporter updated successfully!",
+//         showConfirmButton: false,
+//         timer: 1500,
+//       });
+//       handleCloseEditModal(); // Close modal after success
+//     } catch (error) {
+//       console.log(error);
+//       if (
+//         error.response &&
+//         error.response.data &&
+//         error.response.data.message
+//       ) {
+//         Swal.fire({
+//           position: "center",
+//           icon: "error",
+//           title: "Oops...",
+//           text: error.response.data.message,
+//         });
+//       } else {
+//         Swal.fire({
+//           position: "center",
+//           icon: "error",
+//           title: "Oops...",
+//           text: "Something went wrong! Unable to update reporter data.",
+//         });
+//       }
+//     }
+//   };
+  
+
+//   return (
+//     <div>
+//       <Box className="container">
+//         <Box className="container-fluid mt-5">
+//           <Box className="d-sm-flex align-items-center justify-content-between mb-4">
+//             <Box>
+//               <Typography
+//                 variant="h4"
+//                 gutterBottom
+//                 sx={{
+//                   fontFamily: "sans-serif",
+//                   fontWeight: "bold",
+//                   textAlign: "left",
+//                 }}
+//               >
+//                 Reporter
+//               </Typography>
+//               <Typography
+//                 variant="subtitle2"
+//                 gutterBottom
+//                 sx={{
+//                   fontFamily: "sans-serif",
+//                   textAlign: "left",
+//                   color: "#969494",
+//                 }}
+//               >
+//                 Create, remove and edit Reporter
+//               </Typography>
+//             </Box>
+//             <Box>
+//               <Button
+//                 variant="contained"
+//                 startIcon={<AddIcon />}
+//                 onClick={handleShowAddModal}
+//                 sx={{
+//                   textTransform: "capitalize",
+//                   fontFamily: "Poppins-Regular",
+//                   backgroundColor: "#020e4f",
+//                   borderRadius: "10px",
+//                   mt: 2,
+//                 }}
+//               >
+//                 Add Reporter
+//               </Button>
+//             </Box>
+//           </Box>
+//         </Box>
+//       </Box>
+
+//       {/* Add Reporter Modal */}
+//       <Modal show={showAddModal} onHide={handleCloseAddModal} centered>
+//         <Modal.Header closeButton>
+//           <Modal.Title>Add Reporter</Modal.Title>
+//         </Modal.Header>
+//         <Modal.Body>
+//           <Formik
+//             initialValues={initialValues}
+//             validationSchema={validationSchema}
+//             onSubmit={handleSubmit}
+//           >
+//             {({ errors, touched }) => (
+//               <Form>
+//                 <div className="form-group">
+//                   <label htmlFor="fullName">Full Name</label>
+//                   <Field
+//                     name="fullName"
+//                     className={`form-control ${touched.fullName && errors.fullName ? "is-invalid" : ""
+//                       }`}
+//                   />
+//                   <ErrorMessage
+//                     component="div"
+//                     name="fullName"
+//                     className="invalid-feedback"
+//                   />
+//                 </div>
+
+//                 <div className="form-group">
+//                   <label htmlFor="email">Email</label>
+//                   <Field
+//                     name="email"
+//                     type="email"
+//                     className={`form-control ${touched.email && errors.email ? "is-invalid" : ""
+//                       }`}
+//                   />
+//                   <ErrorMessage
+//                     component="div"
+//                     name="email"
+//                     className="invalid-feedback"
+//                   />
+//                 </div>
+
+//                 <div className="form-group">
+//                   <label htmlFor="password">Password</label>
+//                   <Field
+//                     name="password"
+//                     type="password"
+//                     className={`form-control ${touched.password && errors.password ? "is-invalid" : ""
+//                       }`}
+//                   />
+//                   <ErrorMessage
+//                     component="div"
+//                     name="password"
+//                     className="invalid-feedback"
+//                   />
+//                 </div>
+
+//                 <div className="form-group">
+//                   <label htmlFor="confirmPassword">Confirm Password</label>
+//                   <Field
+//                     name="confirmPassword"
+//                     type="password"
+//                     className={`form-control ${touched.confirmPassword && errors.confirmPassword
+//                       ? "is-invalid"
+//                       : ""
+//                       }`}
+//                   />
+//                   <ErrorMessage
+//                     component="div"
+//                     name="confirmPassword"
+//                     className="invalid-feedback"
+//                   />
+//                 </div>
+
+//                 <div className="form-group">
+//                   <label htmlFor="phone">Phone</label>
+//                   <Field
+//                     name="phone"
+//                     className={`form-control ${touched.phone && errors.phone ? "is-invalid" : ""
+//                       }`}
+//                   />
+//                   <ErrorMessage
+//                     component="div"
+//                     name="phone"
+//                     className="invalid-feedback"
+//                   />
+//                 </div>
+
+//                 <div className="form-group">
+//                   <label htmlFor="gender">Gender</label>
+//                   <Field
+//                     name="gender"
+//                     as="select"
+//                     className={`form-control ${touched.gender && errors.gender ? "is-invalid" : ""
+//                       }`}
+//                   >
+//                     <option value="" label="Select gender" />
+//                     <option value="male" label="Male" />
+//                     <option value="female" label="Female" />
+//                     <option value="other" label="Other" />
+//                   </Field>
+//                   <ErrorMessage
+//                     component="div"
+//                     name="gender"
+//                     className="invalid-feedback"
+//                   />
+//                 </div>
+
+//                 <div className="form-group">
+//                   <label htmlFor="role">Role</label>
+//                   <Field
+//                     name="role"
+//                     as="select"
+//                     className={`form-control ${touched.role && errors.role ? "is-invalid" : ""
+//                       }`}
+//                   >
+//                     <option value="" label="Select role" />
+//                     <option value="reporter" label="Reporter" />
+//                     <option value="admin" label="Admin" />
+//                     <option value="subadmin" label="Subadmin" />
+//                   </Field>
+//                   <ErrorMessage
+//                     component="div"
+//                     name="role"
+//                     className="invalid-feedback"
+//                   />
+//                 </div>
+
+//                 <div className="form-group">
+//                   <label htmlFor="area">Area</label>
+//                   <Field
+//                     name="area"
+//                     className={`form-control ${touched.area && errors.area ? "is-invalid" : ""
+//                       }`}
+//                   />
+//                   <ErrorMessage
+//                     component="div"
+//                     name="area"
+//                     className="invalid-feedback"
+//                   />
+//                 </div>
+
+//                 <Button type="submit" variant="contained" color="primary">
+//                   Add Reporter
+//                 </Button>
+//               </Form>
+//             )}
+//           </Formik>
+//         </Modal.Body>
+//       </Modal>
+
+//       {/* Edit Reporter Modal */}
+//       <Modal show={showEditModal} onHide={handleCloseEditModal} centered>
+//         <Modal.Header closeButton>
+//           <Modal.Title>Edit Reporter Area</Modal.Title>
+//         </Modal.Header>
+//         <Modal.Body>
+//           <Formik
+//             initialValues={currentReporter || { area: "" }}
+//             validationSchema={validationSchemaEdit}
+//             onSubmit={(values, actions) => handleSubmit(values, actions)}
+//           >
+//             {({ errors, touched }) => (
+//               <Form>
+//                 <div className="form-group">
+//                   <label htmlFor="area">Area</label>
+//                   <Field
+//                     name="area"
+//                     className={`form-control ${touched.area && errors.area ? "is-invalid" : ""
+//                       }`}
+//                   />
+//                   <ErrorMessage
+//                     component="div"
+//                     name="area"
+//                     className="invalid-feedback"
+//                   />
+//                 </div>
+
+//                 <Button type="submit" variant="contained" color="primary">
+//                   Update Reporter
+//                 </Button>
+//               </Form>
+//             )}
+//           </Formik>
+//         </Modal.Body>
+//       </Modal>
+
+//       <Container>
+//         <Box className="card">
+//           <Box className="card-body">
+//             <Paper>
+//               <div className="search-bar">
+//                 <input
+//                   type="text"
+//                   placeholder="Search reporters..."
+//                   value={searchQuery}
+//                   onChange={(e) => setSearchQuery(e.target.value)}
+//                 />
+//               </div>
+//               <TableContainer>
+//                 <Table>
+//                   <TableHead>
+//                     <TableRow>
+//                       <TableCell>Full Name</TableCell>
+//                       <TableCell>Email</TableCell>
+//                       <TableCell>Phone</TableCell>
+//                       <TableCell>Gender</TableCell>
+//                       <TableCell>Role</TableCell>
+//                       <TableCell>Area</TableCell>
+//                       <TableCell>Actions</TableCell>
+//                     </TableRow>
+//                   </TableHead>
+//                   <TableBody>
+//                     {paginatedData.map((reporter, index) => (
+//                       <TableRow key={index}>
+//                         <TableCell>{reporter.user_id}</TableCell>
+//                         <TableCell>{reporter.fullName}</TableCell>
+//                         <TableCell>{reporter.email}</TableCell>
+//                         <TableCell>{reporter.phone}</TableCell>
+//                         <TableCell>{reporter.gender}</TableCell>
+//                         <TableCell>{reporter.role}</TableCell>
+//                         <TableCell>{reporter.area}</TableCell>
+//                         <TableCell>
+//                           <Button
+//                             variant="contained"
+//                             color="primary"
+//                             onClick={() => handleShowEditModal(reporter)}
+//                           >
+//                             Edit Area
+//                           </Button>
+//                           <Button
+//                             variant="contained"
+//                             color="secondary"
+//                             onClick={() => DeleteReporterUser(reporter._id)}
+//                           >
+//                             Delete
+//                           </Button>
+//                         </TableCell>
+//                       </TableRow>
+//                     ))}
+//                   </TableBody>
+//                 </Table>
+//               </TableContainer>
+//             </Paper>
+//           </Box>
+//         </Box>
+//       </Container>
+//     </div>
+//   );
+// };
+
+// export default Hoc(Reporter);

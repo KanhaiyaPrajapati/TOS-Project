@@ -571,6 +571,7 @@ button {
 
 .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input{
   height: 9px !important;
+  padding: 16px 22px;
 }
 
 .error-message{
@@ -626,6 +627,12 @@ button {
     margin-top: 50px;
     box-shadow: rgba(145, 158, 171, 0.2) 0px 0px 2px 0px, rgba(145, 158, 171, 0.12) 0px 12px 24px -4px;
     border-radius:20px !important;
+
+    .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input{
+      height: 16px !important;
+      padding: 16px 28px;
+    }
+    
 }
 
 //? Data Table Styling Starts Here 
@@ -702,7 +709,7 @@ button {
   background-color: #fff !important;
   color: black !important;
 }
-
+ 
 
 //! Modal Animation Sass
 .modal-enter {
